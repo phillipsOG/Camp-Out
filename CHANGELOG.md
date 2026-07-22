@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.1
 
 **Camp supplies, BG3-style.** A new *Provisions* tab lets the GM tag any consumable as
 food with a saturation value. Turn on **Require Rations to Camp** and the party has to

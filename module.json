@@ -8,7 +8,7 @@
       "github": "phillipsOG"
     }
   ],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "compatibility": {
     "minimum": "12",
     "verified": "13"
@@ -41,7 +41,7 @@
   "socket": true,
   "url": "https://github.com/phillipsOG/Camp-Out",
   "manifest": "https://raw.githubusercontent.com/phillipsOG/Camp-Out/main/module.json",
-  "download": "https://github.com/phillipsOG/Camp-Out/archive/refs/tags/v1.1.0.zip",
+  "download": "https://github.com/phillipsOG/Camp-Out/archive/refs/tags/v1.1.1.zip",
   "bugs": "https://github.com/phillipsOG/Camp-Out/issues",
   "readme": "https://github.com/phillipsOG/Camp-Out/blob/main/README.md",
   "license": "https://github.com/phillipsOG/Camp-Out/blob/main/LICENSE"
