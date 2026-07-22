@@ -33,6 +33,7 @@ export const SETTINGS = {
   autoTranceRest: "autoTranceRest",
   advanceWorldTime: "advanceWorldTime",
   requireSleep: "requireSleep",
+  requireRations: "requireRations",
   theme: "theme"
 };
 
@@ -40,7 +41,23 @@ export const SETTINGS = {
 export const FLAGS = {
   wellFed: "wellFed",
   preparation: "preparation",
-  campId: "campId"
+  campId: "campId",
+  saturation: "saturation"
+};
+
+/**
+ * Saturation (food value) needed to feed one creature for the night, keyed by
+ * dnd5e's own size codes so `actor.system.traits.size` can index it directly.
+ * Doubles per size step above medium, the same curve dnd5e uses for carrying
+ * capacity, so bigger mouths eat proportionally more.
+ */
+export const SIZE_SATURATION = {
+  tiny: 3,
+  sm: 5,
+  med: 10,
+  lg: 20,
+  huge: 40,
+  grg: 80
 };
 
 /** Socket message types. Everything a player wants to persist is relayed here. */
@@ -59,6 +76,7 @@ export const TEMPLATES = {
   rosterTab: `modules/${MODULE_ID}/templates/parts/tab-roster.hbs`,
   watchesTab: `modules/${MODULE_ID}/templates/parts/tab-watches.hbs`,
   resolveTab: `modules/${MODULE_ID}/templates/parts/tab-resolve.hbs`,
+  provisionsTab: `modules/${MODULE_ID}/templates/parts/tab-provisions.hbs`,
   actionCard: `modules/${MODULE_ID}/templates/parts/action-card.hbs`,
   chatWatch: `modules/${MODULE_ID}/templates/chat/watch-summary.hbs`,
   chatSummary: `modules/${MODULE_ID}/templates/chat/camp-summary.hbs`,

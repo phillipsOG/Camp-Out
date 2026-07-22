@@ -33,6 +33,15 @@ export function registerSettings() {
     default: true
   });
 
+  game.settings.register(MODULE_ID, SETTINGS.requireRations, {
+    name: loc("settings.requireRations.name"),
+    hint: loc("settings.requireRations.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
   game.settings.register(MODULE_ID, SETTINGS.autoInspiration, {
     name: loc("settings.autoInspiration.name"),
     hint: loc("settings.autoInspiration.hint"),

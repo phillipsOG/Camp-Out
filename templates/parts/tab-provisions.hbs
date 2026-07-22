@@ -1,0 +1,53 @@
+<p class="camp-out-hint">
+  <i class="fa-solid fa-circle-info"></i>
+  {{#if provisions.enabled}}
+    {{localize "CAMPOUT.planner.rationsRequiredHint"}}
+  {{else}}
+    {{localize "CAMPOUT.planner.rationsOptionalHint"}}
+  {{/if}}
+</p>
+
+<div class="camp-out-supply-summary {{#if provisions.fed}}is-good{{else}}is-bad{{/if}}">
+  <i class="fa-solid {{#if provisions.fed}}fa-circle-check{{else}}fa-triangle-exclamation{{/if}}"></i>
+  <span>{{provisions.statusLabel}}</span>
+</div>
+
+<div class="camp-out-pack-grid">
+  {{#each provisions.packs}}
+    <section class="camp-out-pack">
+      <header class="camp-out-pack-header">
+        <img src="{{img}}" alt="{{name}}" />
+        <strong>{{name}}</strong>
+        <span class="camp-out-hint-inline">{{requiredLabel}}</span>
+      </header>
+
+      {{#if items.length}}
+        <table class="camp-out-food-table">
+          <thead>
+            <tr>
+              <th class="camp-out-food-col-name">{{localize "CAMPOUT.planner.foodItem"}}</th>
+              <th>{{localize "CAMPOUT.planner.foodQty"}}</th>
+              <th>{{localize "CAMPOUT.planner.foodSaturation"}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each items}}
+              <tr class="{{#if saturation}}is-food{{/if}}">
+                <td class="camp-out-food-name"><img src="{{img}}" alt="{{name}}" /> {{name}}</td>
+                <td class="camp-out-food-qty">{{quantity}}</td>
+                <td>
+                  <input type="number" min="0" step="1" value="{{saturation}}"
+                         data-food-saturation data-actor-id="{{../actorId}}" data-item-id="{{itemId}}" />
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{else}}
+        <p class="camp-out-hint">{{localize "CAMPOUT.planner.noFoodItems"}}</p>
+      {{/if}}
+    </section>
+  {{else}}
+    <p class="camp-out-hint">{{localize "CAMPOUT.planner.noParticipants"}}</p>
+  {{/each}}
+</div>

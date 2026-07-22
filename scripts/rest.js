@@ -19,6 +19,7 @@ import {
   longRestActor,
   shortRestActor
 } from "./effects.js";
+import { partyRequirement, partySupply, consumeRations, setItemSaturation } from "./rations.js";
 
 /** Seconds in one two-hour watch. */
 const WATCH_SECONDS = 2 * 60 * 60;
@@ -135,10 +136,41 @@ export async function startResolving() {
     }
   }
 
+  const rationReport = setting(SETTINGS.requireRations) ? await eatRations() : null;
+  if (rationReport === false) return; // GM declined to start the night underfed.
+
   await CampState.mutate((s) => {
     s.phase = PHASES.resolving;
     s.currentWatch = 1;
   });
+
+  if (rationReport) await postRationSummary(rationReport);
+}
+
+/**
+ * Feed the whole camp before the night starts, warning (with the option to
+ * proceed anyway) if the party's packs cannot cover everyone.
+ * @returns {Promise<object|null|false>} A consumption report, `null` if
+ *   nobody needed feeding, or `false` if the GM backed out.
+ */
+async function eatRations() {
+  const actors = CampState.participants()
+    .map((p) => game.actors.get(p.actorId))
+    .filter(Boolean);
+  if (!actors.length) return null;
+
+  const needed = partyRequirement(actors);
+  const supply = partySupply(actors);
+
+  if (supply < needed) {
+    const proceed = await confirmDialog(
+      loc("dialogs.underfed.title"),
+      loc("dialogs.underfed.content", { supply, needed })
+    );
+    if (!proceed) return false;
+  }
+
+  return consumeRations(actors, needed);
 }
 
 /** Turn a watch's awake list into the shape the chat card and state want. */
@@ -339,6 +371,18 @@ export async function triggerEncounter(watch, { confirm = true } = {}) {
 }
 
 /* -------------------------------------------- */
+/*  Provisions                                  */
+/* -------------------------------------------- */
+
+/** Tag (or untag, with `value <= 0`) an actor's item as food for the Provisions tab. */
+export async function setFoodSaturation(actorId, itemId, value) {
+  assertGM();
+  const item = game.actors.get(actorId)?.items.get(itemId);
+  if (!item) return;
+  return setItemSaturation(item, value);
+}
+
+/* -------------------------------------------- */
 /*  Finishing the camp                          */
 /* -------------------------------------------- */
 
@@ -479,6 +523,21 @@ async function postInvite(state) {
     participants: Object.values(state.participants),
     watchCount: WATCH_COUNT
   });
+  return ChatMessage.create({ speaker: { alias: loc("title") }, content });
+}
+
+/** The camp's rations report, posted once the night's food has been eaten. */
+async function postRationSummary({ fed, short, consumed }) {
+  const items = consumed
+    .map((c) => `<li>${escape(c.name)} ${c.count > 1 ? `&times;${c.count}` : ""}</li>`)
+    .join("");
+
+  const content = `<div class="camp-out-card camp-out-rations ${short > 0 ? "is-short" : ""}">
+      <h3><i class="fa-solid fa-drumstick-bite"></i> ${loc("chat.rationsTitle")}</h3>
+      ${items ? `<ul class="camp-out-card-list">${items}</ul>` : `<p>${loc("chat.rationsNone")}</p>`}
+      <p class="camp-out-card-note">${loc(short > 0 ? "chat.rationsShort" : "chat.rationsFed", { fed, short })}</p>
+    </div>`;
+
   return ChatMessage.create({ speaker: { alias: loc("title") }, content });
 }
 

@@ -273,6 +273,7 @@
 /* -------------------------------------------- */
 
 .camp-out input[type="text"],
+.camp-out input[type="number"],
 .camp-out textarea,
 .camp-out select {
   width: 100%;
@@ -726,6 +727,138 @@
 }
 
 /* -------------------------------------------- */
+/*  Provisions                                  */
+/* -------------------------------------------- */
+
+.camp-out-supply-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border-radius: var(--co-radius);
+  border: 1px solid var(--co-line);
+  background: var(--co-panel);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.camp-out-supply-summary.is-good {
+  color: var(--co-good);
+  border-color: color-mix(in srgb, var(--co-good) 35%, var(--co-line));
+  background: color-mix(in srgb, var(--co-good) 10%, transparent);
+}
+
+.camp-out-supply-summary.is-bad {
+  color: var(--co-bad);
+  border-color: color-mix(in srgb, var(--co-bad) 35%, var(--co-line));
+  background: color-mix(in srgb, var(--co-bad) 10%, transparent);
+}
+
+.camp-out-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.camp-out-pack {
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-radius: var(--co-radius);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.camp-out-pack-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.camp-out-pack-header img {
+  width: 22px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--co-line);
+  flex: 0 0 auto;
+}
+
+.camp-out-pack-header strong {
+  font-size: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.camp-out-hint-inline {
+  font-size: 10px;
+  color: var(--co-muted);
+  white-space: nowrap;
+}
+
+.camp-out-food-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.camp-out-food-table th {
+  text-align: left;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--co-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 4px;
+  border-bottom: 1px solid var(--co-line);
+}
+
+.camp-out-food-table td {
+  padding: 3px 4px;
+  border-bottom: 1px solid var(--co-line);
+  vertical-align: middle;
+}
+
+.camp-out-food-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.camp-out-food-table tr.is-food td {
+  color: var(--co-ink);
+}
+
+.camp-out-food-table tr:not(.is-food) {
+  color: var(--co-muted);
+}
+
+.camp-out-food-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.camp-out-food-name img {
+  width: 18px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: none;
+  flex: 0 0 auto;
+}
+
+.camp-out-food-qty {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.camp-out-food-table input[type="number"] {
+  width: 56px;
+  text-align: center;
+}
+
+/* -------------------------------------------- */
 /*  Timeline                                    */
 /* -------------------------------------------- */
 
@@ -1145,6 +1278,11 @@
 
 .camp-out-encounter.is-sprung,
 .camp-out-broken {
+  border-left-color: #d0402a;
+  background: rgba(208, 64, 42, 0.09);
+}
+
+.camp-out-rations.is-short {
   border-left-color: #d0402a;
   background: rgba(208, 64, 42, 0.09);
 }

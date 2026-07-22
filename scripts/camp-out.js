@@ -12,6 +12,7 @@ import { registerSocket, broadcastOpenSheet, refreshApps } from "./socket.js";
 import { CampState } from "./camp-state.js";
 import { CAMP_ACTIONS, hasTrance, speciesName } from "./actions.js";
 import { spendPreparationDie } from "./effects.js";
+import { requiredSaturation, partyRequirement, partySupply, setItemSaturation } from "./rations.js";
 import {
   beginCamp,
   cancelCamp,
@@ -60,6 +61,10 @@ Hooks.once("ready", () => {
     defaultParticipants,
     hasTrance,
     speciesName,
+    requiredSaturation,
+    partyFoodRequirement: partyRequirement,
+    partyFoodSupply: partySupply,
+    setItemSaturation,
     notifyPlayers: broadcastOpenSheet,
     get state() {
       return CampState.data;

@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+**Camp supplies, BG3-style.** A new *Provisions* tab lets the GM tag any consumable as
+food with a saturation value. Turn on **Require Rations to Camp** and the party has to
+carry enough of it to feed everyone before the night can start - more for bigger
+creatures, from 3 saturation for a Tiny creature up to 80 for Gargantuan. Pressing
+**Start the Night** eats down the party's shared stock (cheapest items first) and posts a
+chat card reporting what was consumed; a short GM can start the night anyway, and
+whatever food remains is still eaten. The setting defaults to off, and the Provisions tab
+keeps tracking supply either way. New API: `requiredSaturation`, `partyFoodRequirement`,
+`partyFoodSupply`, `setItemSaturation`.
+
 ## 1.1.0
 
 **Trance now shortens sleep instead of skipping it.** Elves, eladrin, drow and warforged

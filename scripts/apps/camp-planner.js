@@ -15,6 +15,7 @@ import { setting } from "../settings.js";
 import { applyTheme, toggleTheme, themeContext } from "../theme.js";
 import { confirmDialog, promptForChoice } from "../dialogs.js";
 import { setAssignment, clearAssignments, broadcastOpenSheet } from "../socket.js";
+import { partyRequirement, partySupply, requiredSaturation, foodCandidates } from "../rations.js";
 import {
   beginCamp,
   cancelCamp,
@@ -29,7 +30,8 @@ import {
   triggerEncounterLink,
   triggerEncounter,
   grantTranceShortRests,
-  defaultParticipants
+  defaultParticipants,
+  setFoodSaturation
 } from "../rest.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -71,7 +73,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     body: { template: TEMPLATES.planner, scrollable: [".camp-out-scroll"] }
   };
 
-  /** @type {"roster"|"watches"|"resolve"} */
+  /** @type {"roster"|"watches"|"provisions"|"resolve"} */
   #tab = "roster";
 
   /** @type {CampPlanner|null} */
@@ -107,6 +109,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       tabs: this.#tabContext(),
       isRoster: this.#tab === "roster",
       isWatches: this.#tab === "watches",
+      isProvisions: this.#tab === "provisions",
       isResolve: this.#tab === "resolve",
       headers: Array.from({ length: WATCH_COUNT }, (_, i) => ({
         watch: i + 1,
@@ -118,6 +121,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       participants: this.#participantContext(state, actions),
       actions,
       watches: this.#watchContext(state),
+      provisions: this.#provisionsContext(state),
       ready: CampState.readyCount(),
       allResolved: CampState.allWatchesResolved,
       canStart: state.active && state.phase === PHASES.planning,
@@ -131,6 +135,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     return [
       { id: "roster", label: loc("planner.tabs.roster"), icon: "fa-solid fa-users", active: this.#tab === "roster" },
       { id: "watches", label: loc("planner.tabs.watches"), icon: "fa-solid fa-triangle-exclamation", active: this.#tab === "watches" },
+      { id: "provisions", label: loc("planner.tabs.provisions"), icon: "fa-solid fa-drumstick-bite", active: this.#tab === "provisions" },
       { id: "resolve", label: loc("planner.tabs.resolve"), icon: "fa-solid fa-forward", active: this.#tab === "resolve" }
     ];
   }
@@ -212,6 +217,34 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     return watches;
   }
 
+  #provisionsContext(state) {
+    const actors = CampState.participants()
+      .map((p) => ({ participant: p, actor: game.actors.get(p.actorId) }))
+      .filter((entry) => entry.actor);
+
+    const needed = partyRequirement(actors.map((e) => e.actor));
+    const supply = partySupply(actors.map((e) => e.actor));
+    const fed = supply >= needed;
+
+    return {
+      enabled: setting(SETTINGS.requireRations),
+      needed,
+      supply,
+      fed,
+      statusLabel: loc(fed ? "planner.supplyFed" : "planner.supplyShort", { supply, needed }),
+      packs: actors.map(({ participant, actor }) => {
+        const required = requiredSaturation(actor);
+        return {
+          actorId: participant.actorId,
+          name: participant.name,
+          img: participant.img,
+          requiredLabel: loc("planner.needsSaturation", { amount: required }),
+          items: foodCandidates(actor)
+        };
+      })
+    };
+  }
+
   #availableActors(state) {
     return defaultParticipants()
       .filter((actor) => !state.participants[actor.id])
@@ -248,6 +281,15 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       field.addEventListener("change", (event) => {
         const el = event.currentTarget;
         setEncounter(Number(el.dataset.watch), { [el.dataset.encounterField]: el.value });
+      });
+    }
+
+    // Provisions: tagging an item as food, or updating how much it feeds.
+    for (const input of root.querySelectorAll("[data-food-saturation]")) {
+      input.addEventListener("change", async (event) => {
+        const { actorId, itemId } = event.currentTarget.dataset;
+        await setFoodSaturation(actorId, itemId, Number(event.currentTarget.value) || 0);
+        this.render(false);
       });
     }
 

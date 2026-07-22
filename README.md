@@ -51,6 +51,30 @@ Assisting grants no dice bonus on its own; it tells the table who is awake and a
 If you would rather the time were spent productively, drop a **Task** into that watch
 instead.
 
+### Camp supplies
+
+Turn on **Require Rations to Camp** and the party has to feed itself before the night
+can start. Any consumable can be tagged as food on the **Provisions** tab: give it a
+saturation value there, and it counts toward the party's shared stock. Each creature in
+camp needs to eat some of that stock based on its size:
+
+| Size | Saturation needed |
+|---|---|
+| Tiny | 3 |
+| Small | 5 |
+| Medium | 10 |
+| Large | 20 |
+| Huge | 40 |
+| Gargantuan | 80 |
+
+When the GM presses **Start the Night**, the party eats down its shared stock - cheapest
+items first, so a handful of berries goes before anyone opens a fresh sack of rations -
+and a chat card reports what was eaten. Short on food? The GM is warned and can start the
+night anyway; whatever is left still gets eaten, and some of the party goes to bed hungry.
+
+The Provisions tab keeps tracking supply even with the setting off, so a table that wants
+the bookkeeping without the hard requirement can just watch the numbers.
+
 ### Trance
 
 Species detection reads the character's **species/race item** first (dnd5e 4.x), then
@@ -77,10 +101,14 @@ Open the planner from the **campfire icon in the token controls**, or type `/cam
    and see at a glance who has short-changed themselves on sleep.
 3. **Encounters** is your prep screen. Give each watch a title and notes, and drag in a
    Journal Entry, Roll Table, Macro or Actor. None of it is visible to players.
-4. **Play It Out.** Press **Play This Watch** four times. Each watch posts a public card
-   showing who was awake and what they were doing, whispers your notes privately to you,
-   and - at the halfway point - gives the trance characters their short rest.
-5. **Break Camp & Long Rest** applies the system long rest to everyone, then layers the
+4. **Provisions** tracks the party's food. Tag any consumable with a saturation value and
+   watch the running total against what camp needs - see [Camp supplies](#camp-supplies).
+5. **Start the Night** moves you into Play It Out and - if rations are required - is when
+   the party eats from its supplies. Press **Play This Watch** four times from there. Each
+   watch posts a public card showing who was awake and what they were doing, whispers your
+   notes privately to you, and - at the halfway point - gives the trance characters their
+   short rest.
+6. **Break Camp & Long Rest** applies the system long rest to everyone, then layers the
    camp action benefits on top and posts a summary of exactly what each character got.
 
 ### Springing an encounter
@@ -128,6 +156,7 @@ window's header, or set it under *Configure Settings*. The choice is per-user.
 | Appearance | Dark | Colour scheme for the Camp Out windows. Per-user. |
 | Reveal Camp Actions | off | Show every player what the rest of the party chose, immediately. |
 | Enforce Sleep Requirement | on | Warn before starting the night if someone claimed too many watches. |
+| Require Rations to Camp | off | Warn before starting the night if the party's tagged food falls short of what camp needs. |
 | Grant Inspiration for Slumber | on | Automatically give Inspiration to characters who slumbered. |
 | Automatic Trance Short Rest | on | Short rest for elves and warforged at the halfway point. |
 | Advance World Time | off | Advance the world clock two hours per resolved watch. |
@@ -153,6 +182,11 @@ game.campOut.state;                                // read-only snapshot
 game.campOut.hasTrance(actor);                     // does this actor trance?
 game.campOut.speciesName(actor);                   // resolved species string
 await game.campOut.spendPreparationDie(actor);     // roll and step the die down
+
+game.campOut.requiredSaturation(actor);            // saturation this actor needs to eat
+game.campOut.partyFoodRequirement(actors);         // total saturation a party needs
+game.campOut.partyFoodSupply(actors);              // total saturation a party is carrying
+await game.campOut.setItemSaturation(item, 10);    // tag an item as food worth 10 saturation
 ```
 
 Useful as a macro on a character sheet:
