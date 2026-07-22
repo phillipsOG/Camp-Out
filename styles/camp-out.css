@@ -140,7 +140,12 @@
 /*  Buttons                                     */
 /* -------------------------------------------- */
 
-.camp-out button {
+/* Scoped to .window-content on purpose: our `classes` land on the app root, so
+   a bare `.camp-out button` also styles Foundry's own window-header controls
+   (the close button) and boxes them in. `:where()` keeps specificity at (0,1,1)
+   so the banner-tools and primary/danger overrides below still cascade by
+   source order. */
+.camp-out :where(.window-content) button {
   font-family: inherit;
   font-size: 11.5px;
   line-height: 1.3;
@@ -158,41 +163,41 @@
   box-shadow: none;
 }
 
-.camp-out button:hover:not(:disabled) {
+.camp-out :where(.window-content) button:hover:not(:disabled) {
   background: var(--co-panel-hover);
   border-color: var(--co-ember);
   box-shadow: none;
 }
 
-.camp-out button:active:not(:disabled) {
+.camp-out :where(.window-content) button:active:not(:disabled) {
   transform: translateY(1px);
 }
 
-.camp-out button:disabled {
+.camp-out :where(.window-content) button:disabled {
   opacity: 0.4;
   cursor: default;
 }
 
-.camp-out button.camp-out-primary {
+.camp-out :where(.window-content) button.camp-out-primary {
   background: var(--co-ember);
   border-color: transparent;
   color: #fff;
   font-weight: 600;
 }
 
-.camp-out button.camp-out-primary:hover:not(:disabled) {
+.camp-out :where(.window-content) button.camp-out-primary:hover:not(:disabled) {
   background: var(--co-ember-strong);
   border-color: transparent;
 }
 
-.camp-out button.camp-out-danger-solid {
+.camp-out :where(.window-content) button.camp-out-danger-solid {
   background: var(--co-bad);
   border-color: transparent;
   color: #fff;
   font-weight: 600;
 }
 
-.camp-out button.camp-out-danger-solid:hover:not(:disabled) {
+.camp-out :where(.window-content) button.camp-out-danger-solid:hover:not(:disabled) {
   filter: brightness(1.12);
   border-color: transparent;
 }

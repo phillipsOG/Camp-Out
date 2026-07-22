@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.3
+
+**Fixes.**
+
+- The planner window's close button no longer renders as an empty box. The module's
+  button styling was leaking onto Foundry's own window-header controls; it is now scoped
+  to the window body, so the header X is left with its native look.
+- The planner tab bar is hidden until a camp is actually running. Before a long rest
+  begins there is nothing to show under Encounters, Provisions or Play It Out, so clicking
+  those tabs appeared to do nothing. They now only appear once a camp exists.
+
 ## 1.1.2
 
 **Camp sheets now open themselves.** The moment the GM begins the night, every player's
