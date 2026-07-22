@@ -1,0 +1,14 @@
+<div class="camp-out-card camp-out-invite">
+  <h3><i class="fa-solid fa-campground"></i> {{localize "CAMPOUT.chat.inviteTitle"}}</h3>
+  <p>{{localize "CAMPOUT.chat.inviteBody"}}</p>
+
+  <ul class="camp-out-card-roster">
+    {{#each participants}}
+      <li><img src="{{img}}" alt="{{name}}" /> {{name}}</li>
+    {{/each}}
+  </ul>
+
+  <button type="button" class="camp-out-open">
+    <i class="fa-solid fa-moon"></i> {{localize "CAMPOUT.chat.inviteButton"}}
+  </button>
+</div>

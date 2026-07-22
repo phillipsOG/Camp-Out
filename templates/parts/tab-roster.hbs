@@ -1,0 +1,90 @@
+<div class="camp-out-toolbar">
+  <div class="camp-out-add">
+    <select data-add-actor>
+      {{#each availableActors}}
+        <option value="{{id}}">{{name}}</option>
+      {{else}}
+        <option value="">{{localize "CAMPOUT.planner.noneToAdd"}}</option>
+      {{/each}}
+    </select>
+    <button type="button" data-action="addActor">
+      <i class="fa-solid fa-user-plus"></i> {{localize "CAMPOUT.planner.addActor"}}
+    </button>
+  </div>
+
+  {{#if canStart}}
+    <button type="button" class="camp-out-primary" data-action="startWatches">
+      <i class="fa-solid fa-play"></i> {{localize "CAMPOUT.planner.startWatches"}}
+    </button>
+  {{/if}}
+</div>
+
+<table class="camp-out-grid">
+  <thead>
+    <tr>
+      <th class="camp-out-col-who">{{localize "CAMPOUT.planner.character"}}</th>
+      {{#each headers}}
+        <th class="camp-out-col-watch {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}}">
+          {{label}}<span class="camp-out-hours">{{hours}}</span>
+        </th>
+      {{/each}}
+      <th class="camp-out-col-tools"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each participants}}
+      <tr>
+        <td class="camp-out-who">
+          <img src="{{img}}" alt="{{name}}" />
+          <div class="camp-out-who-text">
+            <strong>{{name}}</strong>
+            <span class="camp-out-status {{#if rested}}is-good{{else}}is-bad{{/if}}">
+              <i class="{{statusIcon}}"></i> {{statusLabel}}
+            </span>
+            <span class="camp-out-badges">
+              {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
+              {{#if ready}}<span class="camp-out-badge is-ready">{{readyLabel}}</span>{{/if}}
+            </span>
+          </div>
+        </td>
+
+        {{#each cells}}
+          <td class="camp-out-cell {{#if resolved}}is-resolved{{/if}}" style="--cell-color: {{color}}">
+            <i class="camp-out-cell-icon {{icon}}"></i>
+            <select data-assign data-actor-id="{{actorId}}" data-watch="{{watch}}" {{#if resolved}}disabled{{/if}}>
+              <option value="">{{localize "CAMPOUT.common.asleep"}}</option>
+              {{#each options}}
+                <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </td>
+        {{/each}}
+
+        <td class="camp-out-row-tools">
+          <button type="button" data-action="clearActor" data-actor-id="{{actorId}}"
+                  data-tooltip="{{localize 'CAMPOUT.planner.clearRow'}}">
+            <i class="fa-solid fa-eraser"></i>
+          </button>
+          <button type="button" data-action="removeActor" data-actor-id="{{actorId}}"
+                  data-tooltip="{{localize 'CAMPOUT.planner.removeActor'}}">
+            <i class="fa-solid fa-user-minus"></i>
+          </button>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<div class="camp-out-legend">
+  {{#each actions}}
+    <span class="camp-out-legend-item" style="--cell-color: {{color}}" data-tooltip="{{details}}">
+      <i class="{{icon}}"></i> {{label}}
+    </span>
+  {{/each}}
+</div>
+
+{{#unless revealActions}}
+  <p class="camp-out-hint">
+    <i class="fa-solid fa-eye-slash"></i> {{localize "CAMPOUT.planner.hiddenHint"}}
+  </p>
+{{/unless}}

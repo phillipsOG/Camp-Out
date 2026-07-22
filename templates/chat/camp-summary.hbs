@@ -1,0 +1,26 @@
+<div class="camp-out-card camp-out-summary">
+  <h3><i class="fa-solid fa-sun"></i> {{localize "CAMPOUT.chat.summaryTitle"}}</h3>
+
+  {{#unless system}}
+    <p class="camp-out-muted">{{localize "CAMPOUT.chat.noSystemAutomation"}}</p>
+  {{/unless}}
+
+  <ul class="camp-out-card-list camp-out-summary-list">
+    {{#each rows}}
+      <li>
+        <img src="{{img}}" alt="{{name}}" />
+        <div class="camp-out-summary-text">
+          <strong>{{name}}</strong>
+          {{#if lines.length}}
+            <ul>
+              {{#each lines}}<li>{{this}}</li>{{/each}}
+            </ul>
+          {{else}}
+            <span class="camp-out-muted">{{localize "CAMPOUT.chat.restedOnly"}}</span>
+          {{/if}}
+          {{#if note}}<p class="camp-out-summary-note">&ldquo;{{note}}&rdquo;</p>{{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+</div>

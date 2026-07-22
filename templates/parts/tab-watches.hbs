@@ -1,0 +1,56 @@
+<p class="camp-out-hint">
+  <i class="fa-solid fa-circle-info"></i> {{localize "CAMPOUT.planner.watchesHint"}}
+</p>
+
+{{#each watches}}
+  <section class="camp-out-watch {{#if resolved}}is-resolved{{/if}} {{#if isNext}}is-next{{/if}}">
+    <header class="camp-out-watch-header">
+      <h3>{{label}} <small>{{hours}}</small></h3>
+      <span class="camp-out-watch-flags">
+        {{#if resolved}}<span class="camp-out-badge">{{localize "CAMPOUT.common.resolved"}}</span>{{/if}}
+        {{#if hasPlan}}<span class="camp-out-badge is-plan">{{localize "CAMPOUT.planner.planned"}}</span>{{/if}}
+      </span>
+    </header>
+
+    <div class="camp-out-watch-roster">
+      {{#each entries}}
+        <span class="camp-out-chip"><i class="{{icon}}"></i> {{name}} &mdash; {{actionLabel}}</span>
+      {{else}}
+        <em class="camp-out-muted">{{localize "CAMPOUT.planner.allAsleep"}}</em>
+      {{/each}}
+    </div>
+
+    <div class="camp-out-field">
+      <label>{{localize "CAMPOUT.planner.encounterTitle"}}</label>
+      <input type="text" data-encounter-field="title" data-watch="{{watch}}"
+             value="{{encounter.title}}" placeholder="{{localize 'CAMPOUT.planner.encounterTitlePlaceholder'}}" />
+    </div>
+
+    <div class="camp-out-field">
+      <label>{{localize "CAMPOUT.planner.encounterNotes"}}</label>
+      <textarea data-encounter-field="text" data-watch="{{watch}}" rows="3"
+                placeholder="{{localize 'CAMPOUT.planner.encounterNotesPlaceholder'}}">{{encounter.text}}</textarea>
+    </div>
+
+    <div class="camp-out-drop" data-watch="{{watch}}">
+      <i class="fa-solid fa-link"></i> {{localize "CAMPOUT.planner.dropHint"}}
+    </div>
+
+    {{#if encounter.links.length}}
+      <ul class="camp-out-link-list">
+        {{#each encounter.links}}
+          <li>
+            <button type="button" class="camp-out-link-open" data-action="triggerLink" data-uuid="{{uuid}}">
+              <i class="{{icon}}"></i> {{name}}
+            </button>
+            <button type="button" class="camp-out-remove" data-action="removeLink"
+                    data-uuid="{{uuid}}" data-watch="{{../watch}}"
+                    data-tooltip="{{localize 'CAMPOUT.planner.removeLink'}}">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </section>
+{{/each}}

@@ -1,0 +1,116 @@
+<div class="camp-out-shell">
+
+  {{#unless hasCharacter}}
+    <div class="camp-out-empty">
+      <i class="fa-solid fa-user-slash"></i>
+      <p>{{localize "CAMPOUT.sheet.noCharacter"}}</p>
+    </div>
+  {{else}}
+
+    <header class="camp-out-banner is-active">
+      <div class="camp-out-banner-text">
+        <h2><i class="fa-solid fa-fire"></i> {{participant.name}}</h2>
+        <p>
+          {{#if slumbering}}
+            {{localize "CAMPOUT.sheet.slumbering"}}
+          {{else if rested}}
+            {{localize "CAMPOUT.sheet.rested"}}
+          {{else}}
+            {{localize "CAMPOUT.sheet.underslept"}}
+          {{/if}}
+          {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
+        </p>
+      </div>
+
+      <div class="camp-out-banner-tools">
+        <button type="button" data-action="clear" {{#if locked}}disabled{{/if}}>
+          <i class="fa-solid fa-eraser"></i> {{localize "CAMPOUT.sheet.clear"}}
+        </button>
+        <button type="button" class="camp-out-primary" data-action="ready" {{#if locked}}disabled{{/if}}>
+          {{#if participant.ready}}
+            <i class="fa-solid fa-circle-check"></i> {{localize "CAMPOUT.sheet.unready"}}
+          {{else}}
+            <i class="fa-regular fa-circle"></i> {{localize "CAMPOUT.sheet.markReady"}}
+          {{/if}}
+        </button>
+      </div>
+    </header>
+
+    {{#if multipleCharacters}}
+      <nav class="camp-out-actor-picker">
+        {{#each characters}}
+          <button type="button" class="camp-out-actor {{#if active}}is-active{{/if}}"
+                  data-action="selectActor" data-actor-id="{{actorId}}">
+            <img src="{{img}}" alt="{{name}}" /> {{name}}
+          </button>
+        {{/each}}
+      </nav>
+    {{/if}}
+
+    <section class="camp-out-body camp-out-scroll">
+      {{#if locked}}
+        <p class="camp-out-hint">
+          <i class="fa-solid fa-lock"></i> {{localize "CAMPOUT.sheet.lockedHint"}}
+        </p>
+      {{/if}}
+
+      {{#each rows}}
+        <section class="camp-out-watch-row {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}}">
+          <header class="camp-out-watch-header">
+            <h3>{{label}} <small>{{hours}}</small></h3>
+            <span class="camp-out-current-choice">
+              <i class="{{assignedIcon}}"></i> {{assignedLabel}}
+            </span>
+          </header>
+
+          <div class="camp-out-action-cards">
+            {{#each choices}}
+              <button type="button"
+                      class="camp-out-action-card {{#if selected}}is-selected{{/if}}"
+                      style="--cell-color: {{color}}"
+                      data-action="assign" data-watch="{{watch}}" data-action-id="{{id}}"
+                      data-tooltip="{{details}}"
+                      {{#if ../resolved}}disabled{{/if}}>
+                <i class="{{icon}}"></i>
+                <span class="camp-out-action-label">{{label}}</span>
+                <span class="camp-out-action-summary">{{summary}}</span>
+              </button>
+            {{/each}}
+          </div>
+        </section>
+      {{/each}}
+
+      <section class="camp-out-note">
+        <label>{{localize "CAMPOUT.sheet.note"}}</label>
+        <textarea data-note rows="3"
+                  placeholder="{{localize 'CAMPOUT.sheet.notePlaceholder'}}">{{note}}</textarea>
+      </section>
+
+      {{#if roster.length}}
+        <section class="camp-out-party">
+          <h3><i class="fa-solid fa-users"></i> {{localize "CAMPOUT.sheet.party"}}</h3>
+          <ul class="camp-out-party-list">
+            {{#each roster}}
+              <li>
+                <img src="{{img}}" alt="{{name}}" />
+                <div class="camp-out-party-text">
+                  <strong>{{name}}</strong>
+                  <span class="camp-out-party-watches">
+                    {{#each watches}}
+                      <span class="camp-out-mini {{#unless visible}}is-hidden{{/unless}}"
+                            data-tooltip="{{label}}">
+                        <i class="{{icon}}"></i>
+                      </span>
+                    {{/each}}
+                  </span>
+                </div>
+                {{#if ready}}<span class="camp-out-badge is-ready">{{localize "CAMPOUT.planner.ready"}}</span>{{/if}}
+              </li>
+            {{/each}}
+          </ul>
+        </section>
+      {{/if}}
+    </section>
+
+  {{/unless}}
+</div>

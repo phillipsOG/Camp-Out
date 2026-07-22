@@ -1,0 +1,44 @@
+{
+  "id": "camp-out",
+  "title": "Camp Out",
+  "description": "Management and automation of Kibbles' Camp Actions. Run a structured long rest across four watches, let players secretly claim shifts and camp actions, plan per-watch encounters, and apply every buff and rest benefit with one button.",
+  "authors": [
+    {
+      "name": "Connor Phillips",
+      "github": "phillipsOG"
+    }
+  ],
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13"
+  },
+  "esmodules": ["scripts/camp-out.js"],
+  "styles": ["styles/camp-out.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "3.0.0",
+          "verified": "4.3.9"
+        }
+      }
+    ]
+  },
+  "socket": true,
+  "url": "https://github.com/phillipsOG/Camp-Out",
+  "manifest": "https://raw.githubusercontent.com/phillipsOG/Camp-Out/main/module.json",
+  "download": "https://github.com/phillipsOG/Camp-Out/archive/refs/tags/v1.0.0.zip",
+  "bugs": "https://github.com/phillipsOG/Camp-Out/issues",
+  "readme": "https://github.com/phillipsOG/Camp-Out/blob/main/README.md",
+  "license": "https://github.com/phillipsOG/Camp-Out/blob/main/LICENSE"
+}

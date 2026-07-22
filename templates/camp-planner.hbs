@@ -1,0 +1,57 @@
+<div class="camp-out-shell">
+
+  <header class="camp-out-banner {{#if active}}is-active{{/if}}">
+    <div class="camp-out-banner-text">
+      {{#if active}}
+        <h2><i class="fa-solid fa-fire"></i> {{localize "CAMPOUT.planner.campActive"}}</h2>
+        {{#if planning}}
+          <p>{{localize "CAMPOUT.planner.phasePlanning"}} &mdash;
+            {{ready.ready}}/{{ready.total}} {{localize "CAMPOUT.planner.playersReady"}}</p>
+        {{else}}
+          <p>{{localize "CAMPOUT.planner.phaseResolving"}}</p>
+        {{/if}}
+      {{else}}
+        <h2><i class="fa-solid fa-campground"></i> {{localize "CAMPOUT.planner.noCamp"}}</h2>
+        <p>{{localize "CAMPOUT.planner.noCampHint"}}</p>
+      {{/if}}
+    </div>
+
+    <div class="camp-out-banner-tools">
+      {{#if active}}
+        <button type="button" data-action="notify">
+          <i class="fa-solid fa-bell"></i> {{localize "CAMPOUT.planner.notify"}}
+        </button>
+        <button type="button" class="camp-out-danger" data-action="cancel">
+          <i class="fa-solid fa-xmark"></i> {{localize "CAMPOUT.planner.cancel"}}
+        </button>
+      {{else}}
+        <button type="button" class="camp-out-primary" data-action="begin">
+          <i class="fa-solid fa-fire"></i> {{localize "CAMPOUT.planner.begin"}}
+        </button>
+      {{/if}}
+    </div>
+  </header>
+
+  <nav class="camp-out-tabs">
+    {{#each tabs}}
+      <button type="button" class="camp-out-tab {{#if active}}is-active{{/if}}"
+              data-action="tab" data-tab-id="{{id}}">
+        <i class="{{icon}}"></i> {{label}}
+      </button>
+    {{/each}}
+  </nav>
+
+  <section class="camp-out-body camp-out-scroll">
+    {{#if active}}
+      {{#if isRoster}}{{> "modules/camp-out/templates/parts/tab-roster.hbs"}}{{/if}}
+      {{#if isWatches}}{{> "modules/camp-out/templates/parts/tab-watches.hbs"}}{{/if}}
+      {{#if isResolve}}{{> "modules/camp-out/templates/parts/tab-resolve.hbs"}}{{/if}}
+    {{else}}
+      <div class="camp-out-empty">
+        <i class="fa-solid fa-campground"></i>
+        <p>{{localize "CAMPOUT.planner.emptyState"}}</p>
+      </div>
+    {{/if}}
+  </section>
+
+</div>

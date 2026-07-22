@@ -1,0 +1,56 @@
+{{#unless canComplete}}
+  <p class="camp-out-hint">
+    <i class="fa-solid fa-circle-info"></i> {{localize "CAMPOUT.planner.resolveLocked"}}
+  </p>
+{{/unless}}
+
+<ol class="camp-out-timeline">
+  {{#each watches}}
+    <li class="camp-out-timeline-item {{#if resolved}}is-resolved{{/if}} {{#if isNext}}is-next{{/if}}">
+      <div class="camp-out-timeline-marker">
+        {{#if resolved}}<i class="fa-solid fa-circle-check"></i>{{else}}<span>{{watch}}</span>{{/if}}
+      </div>
+
+      <div class="camp-out-timeline-body">
+        <header>
+          <h3>{{label}} <small>{{hours}}</small></h3>
+          {{#if canResolve}}
+            <button type="button" class="camp-out-primary" data-action="resolve" data-watch="{{watch}}">
+              <i class="fa-solid fa-forward"></i> {{localize "CAMPOUT.planner.resolveWatch"}}
+            </button>
+          {{/if}}
+        </header>
+
+        <div class="camp-out-watch-roster">
+          {{#each entries}}
+            <span class="camp-out-chip"><i class="{{icon}}"></i> {{name}} &mdash; {{actionLabel}}</span>
+          {{else}}
+            <em class="camp-out-muted">{{localize "CAMPOUT.planner.allAsleep"}}</em>
+          {{/each}}
+        </div>
+
+        {{#if hasPlan}}
+          <div class="camp-out-encounter-preview">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <strong>{{#if encounter.title}}{{encounter.title}}{{else}}{{localize "CAMPOUT.planner.plannedEvent"}}{{/if}}</strong>
+          </div>
+        {{/if}}
+      </div>
+    </li>
+  {{/each}}
+</ol>
+
+<footer class="camp-out-resolve-footer">
+  <button type="button" data-action="tranceRest">
+    <i class="fa-solid fa-hourglass-half"></i> {{localize "CAMPOUT.planner.tranceRest"}}
+  </button>
+
+  <button type="button" class="camp-out-primary camp-out-finish" data-action="complete"
+          {{#unless canComplete}}disabled{{/unless}}>
+    <i class="fa-solid fa-sun"></i> {{localize "CAMPOUT.planner.complete"}}
+  </button>
+</footer>
+
+{{#unless allResolved}}
+  <p class="camp-out-hint camp-out-muted">{{localize "CAMPOUT.planner.completeEarlyHint"}}</p>
+{{/unless}}

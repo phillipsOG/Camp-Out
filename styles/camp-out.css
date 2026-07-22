@@ -1,0 +1,891 @@
+/* Camp Out — a campfire palette that sits comfortably inside Foundry's window chrome. */
+
+.camp-out {
+  --co-ink: #1d1b18;
+  --co-muted: #6d6558;
+  --co-line: rgba(60, 48, 36, 0.22);
+  --co-panel: rgba(255, 252, 245, 0.72);
+  --co-panel-raised: rgba(255, 253, 248, 0.95);
+  --co-ember: #b8562f;
+  --co-ember-dim: rgba(184, 86, 47, 0.14);
+  --co-night: #3d4a6b;
+  --co-good: #3f7d4e;
+  --co-bad: #a8442a;
+  --cell-color: transparent;
+}
+
+.camp-out .window-content {
+  padding: 0;
+  background: linear-gradient(180deg, rgba(255, 249, 238, 0.9), rgba(244, 236, 223, 0.9));
+}
+
+.camp-out-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  color: var(--co-ink);
+  font-size: 13px;
+}
+
+/* -------------------------------------------- */
+/*  Banner                                      */
+/* -------------------------------------------- */
+
+.camp-out-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #2f2a26, #4a3a2c);
+  color: #f6efe2;
+  border-bottom: 2px solid var(--co-ember);
+  flex: 0 0 auto;
+}
+
+.camp-out-banner.is-active {
+  background: linear-gradient(135deg, #3a2a20, #7a3f22);
+}
+
+.camp-out-banner h2 {
+  margin: 0;
+  font-size: 17px;
+  border: none;
+  color: inherit;
+}
+
+.camp-out-banner p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  opacity: 0.82;
+}
+
+.camp-out-banner-tools {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* -------------------------------------------- */
+/*  Buttons                                     */
+/* -------------------------------------------- */
+
+.camp-out button {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 4px;
+  border: 1px solid var(--co-line);
+  background: var(--co-panel-raised);
+  color: var(--co-ink);
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.06s ease;
+}
+
+.camp-out button:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--co-ember);
+  box-shadow: none;
+}
+
+.camp-out button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.camp-out button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.camp-out button.camp-out-primary {
+  background: var(--co-ember);
+  border-color: #8f3f21;
+  color: #fff8ef;
+  font-weight: 600;
+}
+
+.camp-out button.camp-out-primary:hover:not(:disabled) {
+  background: #cc6134;
+}
+
+.camp-out button.camp-out-danger {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #f6efe2;
+}
+
+.camp-out-banner .camp-out-banner-tools button {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #f6efe2;
+}
+
+.camp-out-banner .camp-out-banner-tools button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.camp-out-banner .camp-out-banner-tools button.camp-out-primary {
+  background: var(--co-ember);
+  border-color: #8f3f21;
+}
+
+/* -------------------------------------------- */
+/*  Tabs                                        */
+/* -------------------------------------------- */
+
+.camp-out-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 12px 0;
+  border-bottom: 1px solid var(--co-line);
+  flex: 0 0 auto;
+}
+
+.camp-out-tab {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--co-muted) !important;
+  font-weight: 600;
+}
+
+.camp-out-tab.is-active {
+  background: var(--co-panel-raised) !important;
+  border-color: var(--co-line) !important;
+  border-bottom-color: transparent !important;
+  color: var(--co-ink) !important;
+}
+
+.camp-out-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* -------------------------------------------- */
+/*  Roster grid                                 */
+/* -------------------------------------------- */
+
+.camp-out-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.camp-out-add {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.camp-out-add select {
+  max-width: 220px;
+}
+
+.camp-out-grid {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.camp-out-grid th,
+.camp-out-grid td {
+  border: 1px solid var(--co-line);
+  padding: 6px;
+  vertical-align: middle;
+}
+
+.camp-out-grid thead th {
+  background: rgba(61, 74, 107, 0.1);
+  font-size: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.camp-out-grid thead th.is-current {
+  background: var(--co-ember-dim);
+  color: var(--co-ember);
+}
+
+.camp-out-grid thead th.is-resolved {
+  opacity: 0.6;
+}
+
+.camp-out-hours {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--co-muted);
+}
+
+.camp-out-col-who {
+  width: 210px;
+  text-align: left;
+}
+
+.camp-out-col-tools {
+  width: 62px;
+}
+
+.camp-out-who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.camp-out-who img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--co-line);
+  flex: 0 0 auto;
+}
+
+.camp-out-who-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.camp-out-status {
+  font-size: 11px;
+  color: var(--co-muted);
+}
+
+.camp-out-status.is-good {
+  color: var(--co-good);
+}
+
+.camp-out-status.is-bad {
+  color: var(--co-bad);
+}
+
+.camp-out-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.camp-out-badge {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(61, 74, 107, 0.14);
+  color: var(--co-night);
+}
+
+.camp-out-badge.is-ready {
+  background: rgba(63, 125, 78, 0.16);
+  color: var(--co-good);
+}
+
+.camp-out-badge.is-trance {
+  background: rgba(122, 90, 158, 0.16);
+  color: #6b4e8e;
+}
+
+.camp-out-badge.is-plan {
+  background: var(--co-ember-dim);
+  color: var(--co-ember);
+}
+
+.camp-out-cell {
+  position: relative;
+  text-align: center;
+  border-top: 3px solid var(--cell-color) !important;
+}
+
+.camp-out-cell select {
+  width: 100%;
+  font-size: 11px;
+  height: 24px;
+}
+
+.camp-out-cell-icon {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: var(--cell-color);
+}
+
+.camp-out-cell.is-resolved {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.camp-out-row-tools {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.camp-out-row-tools button {
+  padding: 3px 6px;
+}
+
+/* -------------------------------------------- */
+/*  Legend & hints                              */
+/* -------------------------------------------- */
+
+.camp-out-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.camp-out-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--co-line);
+  border-left: 3px solid var(--cell-color);
+  background: var(--co-panel-raised);
+  cursor: help;
+}
+
+.camp-out-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--co-muted);
+}
+
+.camp-out-muted {
+  color: var(--co-muted);
+}
+
+.camp-out-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  color: var(--co-muted);
+  text-align: center;
+}
+
+.camp-out-empty i {
+  font-size: 42px;
+  opacity: 0.35;
+}
+
+/* -------------------------------------------- */
+/*  Encounter planning                          */
+/* -------------------------------------------- */
+
+.camp-out-watch {
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-left: 4px solid var(--co-night);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.camp-out-watch.is-next {
+  border-left-color: var(--co-ember);
+  box-shadow: 0 0 0 1px var(--co-ember-dim);
+}
+
+.camp-out-watch.is-resolved {
+  opacity: 0.72;
+}
+
+.camp-out-watch-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.camp-out-watch-header h3 {
+  margin: 0;
+  font-size: 14px;
+  border: none;
+}
+
+.camp-out-watch-header small {
+  font-weight: 400;
+  color: var(--co-muted);
+  margin-left: 6px;
+}
+
+.camp-out-watch-roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.camp-out-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(61, 74, 107, 0.1);
+}
+
+.camp-out-field {
+  margin-bottom: 8px;
+}
+
+.camp-out-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--co-muted);
+  margin-bottom: 2px;
+}
+
+.camp-out input[type="text"],
+.camp-out textarea,
+.camp-out select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 12px;
+  background: var(--co-panel-raised);
+  border: 1px solid var(--co-line);
+  border-radius: 4px;
+  color: var(--co-ink);
+}
+
+.camp-out textarea {
+  resize: vertical;
+  padding: 4px 6px;
+}
+
+.camp-out-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: 2px dashed var(--co-line);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--co-muted);
+  text-align: center;
+}
+
+.camp-out-drop.is-over {
+  border-color: var(--co-ember);
+  background: var(--co-ember-dim);
+  color: var(--co-ember);
+}
+
+.camp-out-link-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.camp-out-link-list li {
+  display: flex;
+  gap: 4px;
+}
+
+.camp-out-link-open {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.camp-out-remove {
+  flex: 0 0 auto;
+  color: var(--co-bad);
+}
+
+/* -------------------------------------------- */
+/*  Timeline                                    */
+/* -------------------------------------------- */
+
+.camp-out-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.camp-out-timeline-item {
+  display: flex;
+  gap: 10px;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.camp-out-timeline-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 30px;
+  bottom: 0;
+  width: 2px;
+  background: var(--co-line);
+}
+
+.camp-out-timeline-marker {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--co-panel-raised);
+  border: 2px solid var(--co-line);
+  font-weight: 700;
+  font-size: 12px;
+  z-index: 1;
+}
+
+.camp-out-timeline-item.is-resolved .camp-out-timeline-marker {
+  border-color: var(--co-good);
+  color: var(--co-good);
+}
+
+.camp-out-timeline-item.is-next .camp-out-timeline-marker {
+  border-color: var(--co-ember);
+  color: var(--co-ember);
+}
+
+.camp-out-timeline-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.camp-out-timeline-body header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.camp-out-timeline-body h3 {
+  margin: 0;
+  font-size: 14px;
+  border: none;
+}
+
+.camp-out-encounter-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--co-ember-dim);
+  color: var(--co-ember);
+}
+
+.camp-out-resolve-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--co-line);
+}
+
+.camp-out-finish {
+  font-size: 13px !important;
+  padding: 6px 16px !important;
+}
+
+/* -------------------------------------------- */
+/*  Player sheet                                */
+/* -------------------------------------------- */
+
+.camp-out-actor-picker {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 0;
+  flex-wrap: wrap;
+}
+
+.camp-out-actor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.camp-out-actor img {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  object-fit: cover;
+  border: none;
+}
+
+.camp-out-actor.is-active {
+  border-color: var(--co-ember) !important;
+  background: var(--co-ember-dim) !important;
+}
+
+.camp-out-watch-row {
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-left: 4px solid var(--co-night);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.camp-out-watch-row.is-current {
+  border-left-color: var(--co-ember);
+}
+
+.camp-out-watch-row.is-resolved {
+  opacity: 0.7;
+}
+
+.camp-out-current-choice {
+  font-size: 11px;
+  color: var(--co-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.camp-out-action-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 5px;
+}
+
+.camp-out-action-card {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 6px 8px !important;
+  text-align: left;
+  white-space: normal !important;
+  border-left: 3px solid var(--cell-color) !important;
+  min-height: 58px;
+}
+
+.camp-out-action-card.is-selected {
+  background: var(--co-ember-dim) !important;
+  border-color: var(--co-ember) !important;
+  border-left-color: var(--cell-color) !important;
+  box-shadow: inset 0 0 0 1px var(--co-ember);
+}
+
+.camp-out-action-label {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.camp-out-action-summary {
+  font-size: 10px;
+  color: var(--co-muted);
+  line-height: 1.25;
+}
+
+.camp-out-note {
+  margin-top: 12px;
+}
+
+.camp-out-note label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--co-muted);
+  margin-bottom: 2px;
+}
+
+.camp-out-party {
+  margin-top: 14px;
+}
+
+.camp-out-party h3 {
+  font-size: 13px;
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--co-line);
+  padding-bottom: 3px;
+}
+
+.camp-out-party-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.camp-out-party-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  background: var(--co-panel);
+  border: 1px solid var(--co-line);
+  border-radius: 4px;
+}
+
+.camp-out-party-list img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: none;
+  flex: 0 0 auto;
+}
+
+.camp-out-party-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.camp-out-party-watches {
+  display: flex;
+  gap: 3px;
+}
+
+.camp-out-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background: rgba(61, 74, 107, 0.12);
+  font-size: 10px;
+}
+
+.camp-out-mini.is-hidden {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--co-muted);
+}
+
+/* -------------------------------------------- */
+/*  Chat cards                                  */
+/* -------------------------------------------- */
+
+.camp-out-card {
+  border-left: 3px solid var(--co-ember, #b8562f);
+  padding: 6px 8px;
+  background: rgba(184, 86, 47, 0.05);
+  border-radius: 4px;
+}
+
+.camp-out-card h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  border: none;
+}
+
+.camp-out-card h4 {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+.camp-out-card-list,
+.camp-out-card-roster {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+
+.camp-out-card-list li,
+.camp-out-card-roster li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.camp-out-card-list img,
+.camp-out-card-roster img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: none;
+  flex: 0 0 auto;
+}
+
+.camp-out-card-name {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+
+.camp-out-card-action {
+  font-size: 11px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.camp-out-card-sleepers {
+  font-size: 11px;
+  opacity: 0.75;
+  margin: 4px 0 0;
+}
+
+.camp-out-summary-list li {
+  align-items: flex-start;
+}
+
+.camp-out-summary-text ul {
+  margin: 2px 0 0;
+  padding-left: 16px;
+  font-size: 11px;
+}
+
+.camp-out-summary-note {
+  font-style: italic;
+  font-size: 11px;
+  opacity: 0.8;
+  margin: 3px 0 0;
+}
+
+.camp-out-encounter {
+  border-left-color: #8f3f21;
+}
+
+.camp-out-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.camp-out-link,
+.camp-out-open {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.camp-out-open {
+  margin-top: 6px;
+  width: 100%;
+}

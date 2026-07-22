@@ -1,0 +1,27 @@
+<div class="camp-out-card camp-out-watch-card">
+  <h3>
+    <i class="fa-solid fa-hourglass-half"></i>
+    {{localize "CAMPOUT.chat.watchTitle"}} {{watch}}/{{watchCount}}
+  </h3>
+
+  {{#if anyAwake}}
+    <ul class="camp-out-card-list">
+      {{#each entries}}
+        <li>
+          <img src="{{img}}" alt="{{name}}" />
+          <span class="camp-out-card-name">{{name}}</span>
+          <span class="camp-out-card-action"><i class="{{icon}}"></i> {{actionLabel}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p class="camp-out-muted">{{localize "CAMPOUT.chat.nobodyAwake"}}</p>
+  {{/if}}
+
+  {{#if sleepers.length}}
+    <p class="camp-out-card-sleepers">
+      <i class="fa-solid fa-bed"></i> {{localize "CAMPOUT.chat.asleep"}}:
+      {{#each sleepers}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}
+    </p>
+  {{/if}}
+</div>
