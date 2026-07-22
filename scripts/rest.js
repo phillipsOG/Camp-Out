@@ -20,6 +20,7 @@ import {
   shortRestActor
 } from "./effects.js";
 import { partyRequirement, partySupply, consumeRations, setItemSaturation } from "./rations.js";
+import { broadcastOpenSheet } from "./socket.js";
 
 /** Seconds in one two-hour watch. */
 const WATCH_SECONDS = 2 * 60 * 60;
@@ -87,6 +88,7 @@ export async function beginCamp(actors = defaultParticipants()) {
 
   await CampState.replace(state);
   await postInvite(state);
+  broadcastOpenSheet(); // Every player's camp sheet pops open the moment the night begins.
   return state;
 }
 

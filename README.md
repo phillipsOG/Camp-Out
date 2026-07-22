@@ -128,13 +128,20 @@ had finished before the interruption.
 
 ### As a player
 
-The same campfire icon opens your camp sheet once a camp is running. Pick an action for
-whichever watch you want it on, click it again to go back to sleep, leave a note for the
-GM, and mark yourself ready.
+Your camp sheet **pops open automatically** the moment the GM begins the night - no need
+to go hunting for the campfire icon. It opens again any time the GM presses **Notify
+Players**, and you can always bring it back yourself from the campfire icon or `/camp`.
 
-You can see who else is in camp, but **not what they chose** - their watches show as `?`
-until the GM plays that watch out. That is what lets the GM narrate each shift as a
-reveal.
+The night is shown as a single horizontal timeline, one segment per watch. Click a segment
+to select it, then pick its action from the cards below - click the same action again to
+go back to sleep. Once the GM starts playing the night out, your timeline follows along
+automatically, jumping to whichever watch is currently in progress; click an earlier
+segment any time to look back at what you chose for it. Leave a note for the GM and mark
+yourself ready from the header.
+
+You can see who else is in camp, but **not what they chose** - their mini timelines show
+`?` until the GM plays that watch out (or turns on **Reveal Camp Actions**). That is what
+lets the GM narrate each shift as a reveal.
 
 > **A note on hiding:** concealment is enforced in the interface, not by withholding data
 > from the client. A player determined to dig through the browser console could read the

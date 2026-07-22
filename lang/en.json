@@ -201,6 +201,8 @@
   "CAMPOUT.sheet.markReady": "Mark Ready",
   "CAMPOUT.sheet.unready": "Ready",
   "CAMPOUT.sheet.lockedHint": "The night has started, so your plan is locked in.",
+  "CAMPOUT.sheet.progressPlanning": "Plan your night",
+  "CAMPOUT.sheet.progressResolving": "Watch {current} of {total} under way",
   "CAMPOUT.sheet.note": "Notes for the GM",
   "CAMPOUT.sheet.notePlaceholder": "What are you working on, and how do you describe it?",
   "CAMPOUT.sheet.party": "The Rest of the Camp"

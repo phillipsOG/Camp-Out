@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.2
+
+**Camp sheets now open themselves.** The moment the GM begins the night, every player's
+camp sheet pops open automatically instead of waiting for a manual Notify Players click
+(that button still works too, any time).
+
+**The night is a timeline now, not a stack.** The camp sheet shows one horizontal,
+colour-coded segment per watch instead of four stacked rows. Click a segment to select it
+and pick its action from the cards below; once the GM starts playing the night out, the
+timeline automatically follows whichever watch is current, and clicking an earlier segment
+lets a player look back at what they chose for it. Other party members appear as their own
+small read-only timelines in the party list - still governed by the existing **Reveal Camp
+Actions** setting, so hidden watches show as `?` exactly as before.
+
 ## 1.1.1
 
 **Camp supplies, BG3-style.** A new *Provisions* tab lets the GM tag any consumable as

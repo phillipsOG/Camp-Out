@@ -2,6 +2,13 @@
  * The player's camp sheet: claim a watch, pick a camp action, and see how the
  * night is shaping up without seeing what everyone else chose.
  *
+ * The night is shown as a single horizontal timeline, one segment per watch.
+ * Clicking a segment selects it; the action-card grid below always reflects
+ * whichever segment is selected, rather than repeating a full grid per watch.
+ * Selection defaults to the watch the GM is currently playing out once the
+ * night starts, but a deliberate click pins it until clicked elsewhere - see
+ * `#resolveSelectedWatch`.
+ *
  * Concealment is deliberate but not secret-keeping: other players' picks are
  * withheld from the interface until the watch is played out (or the GM flips the
  * reveal setting), which is what lets the GM narrate each shift as it happens.
@@ -35,7 +42,8 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
       clear: CampSheet.#onClear,
       ready: CampSheet.#onReady,
       theme: CampSheet.#onTheme,
-      selectActor: CampSheet.#onSelectActor
+      selectActor: CampSheet.#onSelectActor,
+      selectWatch: CampSheet.#onSelectWatch
     }
   };
 
@@ -45,6 +53,9 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** Actor whose night is currently being edited. */
   #actorId = null;
+
+  /** Watch the timeline panel is showing, or null to auto-follow the current watch. */
+  #selectedWatch = null;
 
   /** @type {CampSheet|null} */
   static #instance = null;
@@ -82,11 +93,17 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
     const required = participant ? CampState.requiredSleep(participant) : 3;
     const assists = participant ? CampState.assistWatches(participant) : 0;
 
+    const rows = this.#rowContext(state, participant);
+    const selectedWatch = this.#resolveSelectedWatch(state, rows);
+    const selectedRow = rows.find((r) => r.watch === selectedWatch) ?? null;
+    const resolvedCount = rows.filter((r) => r.resolved).length;
+    const locked = state.phase !== PHASES.planning;
+
     return {
       active: state.active,
       phase: state.phase,
       resolving: state.phase === PHASES.resolving,
-      locked: state.phase !== PHASES.planning,
+      locked,
       watchCount: WATCH_COUNT,
       theme: theme.theme,
       themeIcon: theme.icon,
@@ -107,15 +124,44 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
       assistWatches: assists,
       freeWatches: participant ? CampState.freeWatches(participant) : 1,
       slumbering: participant ? CampState.isSlumbering(participant) : false,
-      rows: this.#rowContext(state, participant, actions),
-      actions,
+      rows: rows.map((row) => ({ ...row, selected: row.watch === selectedWatch })),
+      progressPercent: Math.round((resolvedCount / WATCH_COUNT) * 100),
+      progressLabel: this.#progressLabel(state),
+      selectedRow,
+      choices: selectedRow
+        ? actions.map((a) => ({ ...a, watch: selectedWatch, selected: a.id === selectedRow.assigned, disabled: locked }))
+        : [],
       roster: this.#rosterContext(state, participant),
       note: participant?.note ?? ""
     };
   }
 
-  /** One row per watch, each offering the full set of camp actions. */
-  #rowContext(state, participant, actions) {
+  /**
+   * Which watch the timeline panel should show. A deliberate click on a
+   * segment (`#selectedWatch`) always wins; short of that, the panel follows
+   * the GM's pace once the night starts, or lands on the first unplanned
+   * watch while the party is still deciding.
+   */
+  #resolveSelectedWatch(state, rows) {
+    if (this.#selectedWatch && rows.some((r) => r.watch === this.#selectedWatch)) {
+      return this.#selectedWatch;
+    }
+    if (state.phase === PHASES.resolving) {
+      return Math.min(Math.max(state.currentWatch, 1), WATCH_COUNT);
+    }
+    return rows.find((r) => !r.assigned)?.watch ?? rows[0]?.watch ?? 1;
+  }
+
+  #progressLabel(state) {
+    if (state.phase === PHASES.resolving) {
+      const current = Math.min(Math.max(state.currentWatch, 1), WATCH_COUNT);
+      return loc("sheet.progressResolving", { current, total: WATCH_COUNT });
+    }
+    return loc("sheet.progressPlanning");
+  }
+
+  /** One timeline segment per watch. The action-card grid is built separately, for whichever segment is selected. */
+  #rowContext(state, participant) {
     const schedule = participant ? CampState.scheduleFor(participant) : [];
 
     return schedule.map((slot) => {
@@ -131,22 +177,19 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
         mode: slot.mode,
         assisting,
         asleep: slot.mode === MODES.sleep,
+        color: action?.color ?? "transparent",
         assignedLabel: action
           ? actionLabel(action.id)
           : loc(assisting ? "common.assisting" : "common.asleep"),
-        assignedIcon: action?.icon ?? (assisting ? "fa-solid fa-hands-holding-circle" : "fa-solid fa-bed"),
-        choices: actions.map((a) => ({
-          ...a,
-          watch: slot.watch,
-          selected: a.id === slot.actionId
-        }))
+        assignedIcon: action?.icon ?? (assisting ? "fa-solid fa-hands-holding-circle" : "fa-solid fa-bed")
       };
     });
   }
 
   /**
-   * The rest of the party. An entry's action is only included once that watch
-   * has been played out, or when the GM has turned reveal on.
+   * The rest of the party, each as their own mini timeline. An entry's action
+   * is only included once that watch has been played out, or when the GM has
+   * turned reveal on - see the module README's note on concealment.
    */
   #rosterContext(state, participant) {
     const reveal = setting(SETTINGS.revealActions);
@@ -157,18 +200,23 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
         const schedule = CampState.scheduleFor(p);
         const watches = schedule.map((slot) => {
           const visible = reveal || !!state.resolved?.[slot.watch];
+          const resolved = !!state.resolved?.[slot.watch];
+          const current = state.currentWatch === slot.watch;
+          if (!visible) {
+            return { watch: slot.watch, visible, resolved, current, label: "?", icon: "fa-solid fa-question", color: "transparent" };
+          }
           const action = getAction(slot.actionId);
           const assisting = slot.mode === MODES.assist;
-          if (!visible) {
-            return { watch: slot.watch, visible, label: "?", icon: "fa-solid fa-question" };
-          }
           return {
             watch: slot.watch,
             visible,
+            resolved,
+            current,
             label: action
               ? actionLabel(action.id)
               : loc(assisting ? "common.assisting" : "common.asleep"),
-            icon: action?.icon ?? (assisting ? "fa-solid fa-hands-holding-circle" : "fa-solid fa-bed")
+            icon: action?.icon ?? (assisting ? "fa-solid fa-hands-holding-circle" : "fa-solid fa-bed"),
+            color: action?.color ?? "transparent"
           };
         });
         return { name: p.name, img: p.img, ready: p.ready, trance: p.trance, watches };
@@ -236,6 +284,12 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #onSelectActor(event, target) {
     this.#actorId = target.dataset.actorId;
+    this.#selectedWatch = null;
+    this.render(false);
+  }
+
+  static async #onSelectWatch(event, target) {
+    this.#selectedWatch = Number(target.dataset.watch);
     this.render(false);
   }
 }

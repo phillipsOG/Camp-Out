@@ -1009,24 +1009,158 @@
   background: color-mix(in srgb, var(--co-ember) 14%, transparent) !important;
 }
 
-.camp-out-watch-row {
+/* -------------------------------------------- */
+/*  Camp timeline (horizontal, sheet-only)      */
+/* -------------------------------------------- */
+
+.camp-out-hbar {
+  margin-bottom: 10px;
+}
+
+.camp-out-hbar-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--co-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+}
+
+.camp-out-hbar-rail {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--co-line);
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+
+.camp-out-hbar-rail-fill {
+  height: 100%;
+  background: var(--co-ember);
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+
+.camp-out-hbar-segments {
+  display: flex;
+  gap: 5px;
+}
+
+.camp-out-hbar-segment {
+  flex: 1 1 0;
+  flex-direction: column !important;
+  align-items: center;
+  gap: 3px !important;
+  padding: 7px 4px !important;
+  text-align: center;
+  white-space: normal !important;
+  box-shadow: inset 0 2px 0 var(--cell-color);
+}
+
+.camp-out-hbar-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--co-panel-raised);
+  border: 1px solid var(--co-line);
+  color: var(--co-muted);
+  font-size: 11px;
+}
+
+.camp-out-hbar-hours {
+  font-size: 9px;
+  color: var(--co-muted);
+  letter-spacing: 0.02em;
+}
+
+.camp-out-hbar-choice {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.camp-out-hbar-segment.is-current .camp-out-hbar-marker {
+  border-color: var(--co-ember);
+  color: var(--co-ember);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--co-ember) 20%, transparent);
+}
+
+.camp-out-hbar-segment.is-resolved {
+  opacity: 0.6;
+}
+
+.camp-out-hbar-segment.is-resolved .camp-out-hbar-marker {
+  border-color: var(--co-good);
+  color: var(--co-good);
+}
+
+.camp-out-hbar-segment.is-selected {
+  background: color-mix(in srgb, var(--cell-color) 16%, var(--co-panel)) !important;
+  border-color: var(--cell-color) !important;
+}
+
+.camp-out-hbar-segment.is-assisting .camp-out-hbar-marker {
+  color: var(--co-assist);
+  border-color: color-mix(in srgb, var(--co-assist) 45%, transparent);
+}
+
+.camp-out-hbar-segment.is-asleep .camp-out-hbar-marker {
+  color: var(--co-muted);
+}
+
+.camp-out-watch-panel {
   background: var(--co-panel);
   border: 1px solid var(--co-line);
   border-radius: var(--co-radius);
-  padding: 7px 9px;
-  margin-bottom: 6px;
+  padding: 8px 10px;
   box-shadow: inset 3px 0 0 var(--co-line-strong);
 }
 
-.camp-out-watch-row.is-current {
+.camp-out-watch-panel.is-current {
   box-shadow: inset 3px 0 0 var(--co-ember);
+  border-color: color-mix(in srgb, var(--co-ember) 35%, var(--co-line));
 }
 
-.camp-out-watch-row.is-assisting {
-  box-shadow: inset 3px 0 0 var(--co-assist);
+.camp-out-watch-panel.is-resolved {
+  opacity: 0.75;
 }
 
-.camp-out-watch-row.is-resolved {
+/* Party members' mini timelines: same colour language as the main bar, at a
+   glance-only scale. */
+.camp-out-hbar-mini {
+  display: flex;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.camp-out-hbar-mini-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--cell-color) 18%, var(--co-panel-raised));
+  border: 1px solid color-mix(in srgb, var(--cell-color) 40%, var(--co-line));
+  font-size: 9px;
+  color: var(--co-ink);
+}
+
+.camp-out-hbar-mini-seg.is-current {
+  border-color: var(--co-ember);
+}
+
+.camp-out-hbar-mini-seg.is-resolved {
+  opacity: 0.7;
+}
+
+.camp-out-hbar-mini-seg.is-hidden {
+  background: var(--co-panel-raised);
+  border-color: var(--co-line);
+  color: var(--co-muted);
   opacity: 0.6;
 }
 

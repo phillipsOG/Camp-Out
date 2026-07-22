@@ -60,12 +60,39 @@
         </p>
       {{/if}}
 
-      {{#each rows}}
-        <section class="camp-out-watch-row {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}} {{#if assisting}}is-assisting{{/if}}">
+      <div class="camp-out-hbar">
+        <div class="camp-out-hbar-label">{{progressLabel}}</div>
+        <div class="camp-out-hbar-rail">
+          <div class="camp-out-hbar-rail-fill" style="width: {{progressPercent}}%"></div>
+        </div>
+        <div class="camp-out-hbar-track">
+          <div class="camp-out-hbar-segments">
+            {{#each rows}}
+              <button type="button"
+                      class="camp-out-hbar-segment
+                        {{#if selected}}is-selected{{/if}}
+                        {{#if current}}is-current{{/if}}
+                        {{#if resolved}}is-resolved{{/if}}
+                        {{#if assisting}}is-assisting{{/if}}
+                        {{#if asleep}}is-asleep{{/if}}"
+                      style="--cell-color: {{color}}"
+                      data-action="selectWatch" data-watch="{{watch}}"
+                      data-tooltip="{{assignedLabel}}">
+                <span class="camp-out-hbar-marker"><i class="{{assignedIcon}}"></i></span>
+                <span class="camp-out-hbar-hours">{{hours}}</span>
+                <span class="camp-out-hbar-choice">{{assignedLabel}}</span>
+              </button>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+
+      {{#if selectedRow}}
+        <section class="camp-out-watch-panel {{#if selectedRow.resolved}}is-resolved{{/if}} {{#if selectedRow.current}}is-current{{/if}}">
           <header class="camp-out-watch-header">
-            <h3>{{label}} <small>{{hours}}</small></h3>
-            <span class="camp-out-current-choice {{#if assisting}}is-assist{{/if}}">
-              <i class="{{assignedIcon}}"></i> {{assignedLabel}}
+            <h3>{{selectedRow.label}} <small>{{selectedRow.hours}}</small></h3>
+            <span class="camp-out-current-choice {{#if selectedRow.assisting}}is-assist{{/if}}">
+              <i class="{{selectedRow.assignedIcon}}"></i> {{selectedRow.assignedLabel}}
             </span>
           </header>
 
@@ -76,14 +103,14 @@
                       style="--cell-color: {{color}}"
                       data-action="assign" data-watch="{{watch}}" data-action-id="{{id}}"
                       data-tooltip="{{details}}"
-                      {{#if ../resolved}}disabled{{/if}}>
+                      {{#if disabled}}disabled{{/if}}>
                 <i class="{{icon}}"></i>
                 <span class="camp-out-action-label">{{label}}</span>
               </button>
             {{/each}}
           </div>
         </section>
-      {{/each}}
+      {{/if}}
 
       <section class="camp-out-note">
         <label>{{localize "CAMPOUT.sheet.note"}}</label>
@@ -100,14 +127,18 @@
                 <img src="{{img}}" alt="{{name}}" />
                 <div class="camp-out-party-text">
                   <strong>{{name}}</strong>
-                  <span class="camp-out-party-watches">
+                  <div class="camp-out-hbar-mini">
                     {{#each watches}}
-                      <span class="camp-out-mini {{#unless visible}}is-hidden{{/unless}}"
+                      <span class="camp-out-hbar-mini-seg
+                          {{#if current}}is-current{{/if}}
+                          {{#if resolved}}is-resolved{{/if}}
+                          {{#unless visible}}is-hidden{{/unless}}"
+                            style="--cell-color: {{color}}"
                             data-tooltip="{{label}}">
                         <i class="{{icon}}"></i>
                       </span>
                     {{/each}}
-                  </span>
+                  </div>
                 </div>
                 {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
                 {{#if ready}}<span class="camp-out-badge is-ready">{{localize "CAMPOUT.planner.ready"}}</span>{{/if}}
