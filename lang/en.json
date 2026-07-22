@@ -11,6 +11,7 @@
   "CAMPOUT.common.confirm": "Confirm",
   "CAMPOUT.common.darkMode": "Switch to dark mode",
   "CAMPOUT.common.lightMode": "Switch to light mode",
+  "CAMPOUT.common.footer": "BGS: Camp Out v{version}",
 
   "CAMPOUT.actions.watch.label": "Take a Watch",
   "CAMPOUT.actions.watch.summary": "Stand guard, fully alert.",
@@ -134,10 +135,10 @@
   "CAMPOUT.chat.noSystemAutomation": "This world is not running dnd5e, so rest benefits were not applied automatically.",
   "CAMPOUT.chat.restedOnly": "Rested through the night.",
 
-  "CAMPOUT.controls.planner": "Camp Out - Planner",
+  "CAMPOUT.controls.planner": "Camp Out",
   "CAMPOUT.controls.sheet": "Camp Out - My Night",
 
-  "CAMPOUT.planner.title": "Camp Out - Camp Planner",
+  "CAMPOUT.planner.title": "Camp Out",
   "CAMPOUT.planner.tabs.roster": "Roster & Shifts",
   "CAMPOUT.planner.tabs.watches": "Encounters",
   "CAMPOUT.planner.tabs.provisions": "Provisions",

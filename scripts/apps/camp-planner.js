@@ -8,7 +8,7 @@
  * to register.
  */
 
-import { WATCH_COUNT, TEMPLATES, SETTINGS, getDragData, loc } from "../constants.js";
+import { WATCH_COUNT, TEMPLATES, SETTINGS, getDragData, loc, moduleVersion } from "../constants.js";
 import { CampState, PHASES, MODES } from "../camp-state.js";
 import { localizedActions, actionLabel, getAction } from "../actions.js";
 import { setting } from "../settings.js";
@@ -127,7 +127,8 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       canStart: state.active && state.phase === PHASES.planning,
       canComplete: state.active && state.phase === PHASES.resolving,
       revealActions: setting(SETTINGS.revealActions),
-      availableActors: this.#availableActors(state)
+      availableActors: this.#availableActors(state),
+      footer: loc("common.footer", { version: moduleVersion() })
     };
   }
 

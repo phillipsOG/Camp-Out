@@ -92,6 +92,11 @@ export function generation() {
   return Number(game.version?.split(".")[0] ?? 12);
 }
 
+/** @returns {string} This module's version, straight from module.json, for the window footer. */
+export function moduleVersion() {
+  return game.modules.get(MODULE_ID)?.version ?? "";
+}
+
 /** The TextEditor implementation, which moved namespaces in v13. */
 export function textEditor() {
   return foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor;

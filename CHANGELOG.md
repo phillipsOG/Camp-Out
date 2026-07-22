@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.4
+
+**Branding tidy-up.** The Planner window and its token-control tooltip are now just called
+"Camp Out" rather than "Camp Out - Camp Planner" and "Camp Out - Planner". Both the Planner
+and camp sheet windows now carry a small footer showing the running module version, read
+live from `module.json` so it never needs updating by hand.
+
 ## 1.1.3
 
 **Fixes.**

@@ -14,7 +14,7 @@
  * reveal setting), which is what lets the GM narrate each shift as it happens.
  */
 
-import { WATCH_COUNT, TEMPLATES, SETTINGS, loc } from "../constants.js";
+import { WATCH_COUNT, TEMPLATES, SETTINGS, loc, moduleVersion } from "../constants.js";
 import { CampState, PHASES, MODES } from "../camp-state.js";
 import { localizedActions, actionLabel, getAction } from "../actions.js";
 import { setting } from "../settings.js";
@@ -132,7 +132,8 @@ export class CampSheet extends HandlebarsApplicationMixin(ApplicationV2) {
         ? actions.map((a) => ({ ...a, watch: selectedWatch, selected: a.id === selectedRow.assigned, disabled: locked }))
         : [],
       roster: this.#rosterContext(state, participant),
-      note: participant?.note ?? ""
+      note: participant?.note ?? "",
+      footer: loc("common.footer", { version: moduleVersion() })
     };
   }
 

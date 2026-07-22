@@ -273,6 +273,17 @@
   padding: 10px;
 }
 
+.camp-out-footer {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  text-align: center;
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: var(--co-muted);
+  background: var(--co-bg-alt);
+  border-top: 1px solid var(--co-line);
+}
+
 /* -------------------------------------------- */
 /*  Form controls                               */
 /* -------------------------------------------- */
