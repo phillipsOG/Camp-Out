@@ -1,22 +1,67 @@
-/* Camp Out — a campfire palette that sits comfortably inside Foundry's window chrome. */
+/* Camp Out
+ *
+ * Dark by default, light on request. The theme is stamped as data-theme on the
+ * application root, which is the same element that carries .camp-out, so every
+ * variable below resolves from one place.
+ */
 
 .camp-out {
-  --co-ink: #1d1b18;
-  --co-muted: #6d6558;
-  --co-line: rgba(60, 48, 36, 0.22);
-  --co-panel: rgba(255, 252, 245, 0.72);
-  --co-panel-raised: rgba(255, 253, 248, 0.95);
-  --co-ember: #b8562f;
-  --co-ember-dim: rgba(184, 86, 47, 0.14);
-  --co-night: #3d4a6b;
-  --co-good: #3f7d4e;
-  --co-bad: #a8442a;
+  --co-ember: #e07a45;
+  --co-ember-strong: #f08a52;
+  --co-good: #5fbf7f;
+  --co-warn: #e0b64a;
+  --co-bad: #e0603f;
+  --co-trance: #b48ce0;
+  --co-assist: #6fb2d6;
   --cell-color: transparent;
+
+  --co-radius: 6px;
+  --co-radius-sm: 4px;
+  --co-gap: 6px;
+}
+
+/* Dark is the default, and also the explicit choice. */
+.camp-out,
+.camp-out[data-theme="dark"] {
+  --co-bg: #14161c;
+  --co-bg-alt: #1b1e26;
+  --co-panel: rgba(255, 255, 255, 0.04);
+  --co-panel-raised: rgba(255, 255, 255, 0.07);
+  --co-panel-hover: rgba(255, 255, 255, 0.11);
+  --co-line: rgba(255, 255, 255, 0.1);
+  --co-line-strong: rgba(255, 255, 255, 0.18);
+  --co-ink: #e6e8ee;
+  --co-muted: #929aad;
+  --co-header: linear-gradient(135deg, #1e2029, #2c2028);
+  --co-header-active: linear-gradient(135deg, #241d1f, #4a2a1c);
+  --co-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.camp-out[data-theme="light"] {
+  --co-bg: #f6f2ea;
+  --co-bg-alt: #efe9de;
+  --co-panel: rgba(90, 70, 50, 0.05);
+  --co-panel-raised: #fffdf9;
+  --co-panel-hover: #fff;
+  --co-line: rgba(80, 62, 45, 0.18);
+  --co-line-strong: rgba(80, 62, 45, 0.32);
+  --co-ink: #241f19;
+  --co-muted: #776c5e;
+  --co-header: linear-gradient(135deg, #3a332c, #4d3b2e);
+  --co-header-active: linear-gradient(135deg, #462f22, #8a4526);
+  --co-shadow: 0 1px 2px rgba(60, 45, 30, 0.12);
+  --co-ember: #c25a2a;
+  --co-ember-strong: #d26834;
+  --co-good: #3f8a55;
+  --co-bad: #b4462a;
+  --co-trance: #7a55a8;
+  --co-assist: #3f7d9c;
 }
 
 .camp-out .window-content {
   padding: 0;
-  background: linear-gradient(180deg, rgba(255, 249, 238, 0.9), rgba(244, 236, 223, 0.9));
+  background: var(--co-bg);
+  color: var(--co-ink);
 }
 
 .camp-out-shell {
@@ -25,7 +70,8 @@
   height: 100%;
   min-height: 0;
   color: var(--co-ink);
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.45;
 }
 
 /* -------------------------------------------- */
@@ -36,35 +82,58 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  background: linear-gradient(135deg, #2f2a26, #4a3a2c);
-  color: #f6efe2;
-  border-bottom: 2px solid var(--co-ember);
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--co-header);
+  color: #f2ece2;
+  border-bottom: 1px solid var(--co-line);
+  box-shadow: inset 0 -2px 0 rgba(224, 122, 69, 0.45);
   flex: 0 0 auto;
 }
 
 .camp-out-banner.is-active {
-  background: linear-gradient(135deg, #3a2a20, #7a3f22);
+  background: var(--co-header-active);
 }
 
 .camp-out-banner h2 {
   margin: 0;
-  font-size: 17px;
+  font-size: 15px;
+  font-weight: 600;
   border: none;
   color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.camp-out-banner h2 i {
+  color: var(--co-ember-strong);
+  font-size: 13px;
 }
 
 .camp-out-banner p {
-  margin: 2px 0 0;
-  font-size: 12px;
-  opacity: 0.82;
+  margin: 1px 0 0;
+  font-size: 11.5px;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.camp-out-count {
+  font-variant-numeric: tabular-nums;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 10.5px;
 }
 
 .camp-out-banner-tools {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex: 0 0 auto;
+  align-items: center;
 }
 
 /* -------------------------------------------- */
@@ -73,20 +142,24 @@
 
 .camp-out button {
   font-family: inherit;
-  font-size: 12px;
-  line-height: 1.4;
-  border-radius: 4px;
-  border: 1px solid var(--co-line);
+  font-size: 11.5px;
+  line-height: 1.3;
+  border-radius: var(--co-radius-sm);
+  border: 1px solid var(--co-line-strong);
   background: var(--co-panel-raised);
   color: var(--co-ink);
-  padding: 4px 10px;
+  padding: 4px 9px;
   cursor: pointer;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   transition: background 0.12s ease, border-color 0.12s ease, transform 0.06s ease;
+  box-shadow: none;
 }
 
 .camp-out button:hover:not(:disabled) {
-  background: #fff;
+  background: var(--co-panel-hover);
   border-color: var(--co-ember);
   box-shadow: none;
 }
@@ -96,40 +169,57 @@
 }
 
 .camp-out button:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: default;
 }
 
 .camp-out button.camp-out-primary {
   background: var(--co-ember);
-  border-color: #8f3f21;
-  color: #fff8ef;
+  border-color: transparent;
+  color: #fff;
   font-weight: 600;
 }
 
 .camp-out button.camp-out-primary:hover:not(:disabled) {
-  background: #cc6134;
+  background: var(--co-ember-strong);
+  border-color: transparent;
 }
 
-.camp-out button.camp-out-danger {
-  background: transparent;
+.camp-out button.camp-out-danger-solid {
+  background: var(--co-bad);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.camp-out button.camp-out-danger-solid:hover:not(:disabled) {
+  filter: brightness(1.12);
+  border-color: transparent;
+}
+
+.camp-out-icon-btn {
+  padding: 4px 7px !important;
+  justify-content: center;
+}
+
+.camp-out-banner-tools button {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f2ece2;
+}
+
+.camp-out-banner-tools button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.35);
-  color: #f6efe2;
 }
 
-.camp-out-banner .camp-out-banner-tools button {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
-  color: #f6efe2;
-}
-
-.camp-out-banner .camp-out-banner-tools button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.26);
-}
-
-.camp-out-banner .camp-out-banner-tools button.camp-out-primary {
+.camp-out-banner-tools button.camp-out-primary {
   background: var(--co-ember);
-  border-color: #8f3f21;
+  border-color: transparent;
+}
+
+.camp-out-banner-tools button.camp-out-danger {
+  background: transparent;
 }
 
 /* -------------------------------------------- */
@@ -139,32 +229,84 @@
 .camp-out-tabs {
   display: flex;
   gap: 2px;
-  padding: 8px 12px 0;
+  padding: 6px 10px 0;
+  background: var(--co-bg-alt);
   border-bottom: 1px solid var(--co-line);
   flex: 0 0 auto;
 }
 
 .camp-out-tab {
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
   background: transparent !important;
   border-color: transparent !important;
   color: var(--co-muted) !important;
   font-weight: 600;
+  border-radius: var(--co-radius-sm) var(--co-radius-sm) 0 0 !important;
+  padding: 5px 12px !important;
+  position: relative;
+  bottom: -1px;
+}
+
+.camp-out-tab:hover {
+  color: var(--co-ink) !important;
 }
 
 .camp-out-tab.is-active {
-  background: var(--co-panel-raised) !important;
+  background: var(--co-bg) !important;
   border-color: var(--co-line) !important;
-  border-bottom-color: transparent !important;
+  border-bottom-color: var(--co-bg) !important;
   color: var(--co-ink) !important;
+}
+
+.camp-out-tab.is-active i {
+  color: var(--co-ember);
 }
 
 .camp-out-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 12px;
+  padding: 10px;
+}
+
+/* -------------------------------------------- */
+/*  Form controls                               */
+/* -------------------------------------------- */
+
+.camp-out input[type="text"],
+.camp-out textarea,
+.camp-out select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 11.5px;
+  background: var(--co-panel-raised);
+  border: 1px solid var(--co-line);
+  border-radius: var(--co-radius-sm);
+  color: var(--co-ink);
+  padding: 3px 6px;
+  height: auto;
+}
+
+.camp-out select {
+  height: 24px;
+}
+
+.camp-out textarea {
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.camp-out input::placeholder,
+.camp-out textarea::placeholder {
+  color: var(--co-muted);
+  opacity: 0.75;
+}
+
+.camp-out input:focus,
+.camp-out textarea:focus,
+.camp-out select:focus {
+  outline: none;
+  border-color: var(--co-ember);
+  box-shadow: 0 0 0 2px rgba(224, 122, 69, 0.18);
 }
 
 /* -------------------------------------------- */
@@ -176,56 +318,68 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .camp-out-add {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
 }
 
 .camp-out-add select {
-  max-width: 220px;
+  max-width: 200px;
 }
 
 .camp-out-grid {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--co-panel);
   border: 1px solid var(--co-line);
-  border-radius: 6px;
+  border-radius: var(--co-radius);
   overflow: hidden;
 }
 
 .camp-out-grid th,
 .camp-out-grid td {
-  border: 1px solid var(--co-line);
-  padding: 6px;
+  padding: 5px 6px;
   vertical-align: middle;
+  border-bottom: 1px solid var(--co-line);
+}
+
+.camp-out-grid tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .camp-out-grid thead th {
-  background: rgba(61, 74, 107, 0.1);
-  font-size: 12px;
+  background: var(--co-bg-alt);
+  font-size: 11px;
   text-align: center;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 6px;
+}
+
+.camp-out-th-label {
+  display: block;
 }
 
 .camp-out-grid thead th.is-current {
-  background: var(--co-ember-dim);
   color: var(--co-ember);
+  box-shadow: inset 0 -2px 0 var(--co-ember);
 }
 
 .camp-out-grid thead th.is-resolved {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .camp-out-hours {
   display: block;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 400;
   color: var(--co-muted);
+  letter-spacing: 0.03em;
 }
 
 .camp-out-col-who {
@@ -234,20 +388,20 @@
 }
 
 .camp-out-col-tools {
-  width: 62px;
+  width: 58px;
 }
 
 .camp-out-who {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .camp-out-who img {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--co-radius-sm);
   border: 1px solid var(--co-line);
   flex: 0 0 auto;
 }
@@ -255,16 +409,32 @@
 .camp-out-who-text {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
 }
 
-.camp-out-status {
-  font-size: 11px;
-  color: var(--co-muted);
+.camp-out-who-text strong {
+  font-size: 12px;
+  line-height: 1.2;
 }
 
-.camp-out-status.is-good {
+.camp-out-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.camp-out-status {
+  font-size: 10.5px;
+  color: var(--co-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.camp-out-status.is-good i {
   color: var(--co-good);
 }
 
@@ -272,68 +442,83 @@
   color: var(--co-bad);
 }
 
-.camp-out-badges {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
 .camp-out-badge {
   display: inline-block;
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 1px 6px;
-  border-radius: 10px;
-  background: rgba(61, 74, 107, 0.14);
-  color: var(--co-night);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--co-panel-raised);
+  color: var(--co-muted);
+  border: 1px solid var(--co-line);
+  white-space: nowrap;
 }
 
 .camp-out-badge.is-ready {
-  background: rgba(63, 125, 78, 0.16);
   color: var(--co-good);
+  border-color: color-mix(in srgb, var(--co-good) 40%, transparent);
+  background: color-mix(in srgb, var(--co-good) 12%, transparent);
 }
 
 .camp-out-badge.is-trance {
-  background: rgba(122, 90, 158, 0.16);
-  color: #6b4e8e;
+  color: var(--co-trance);
+  border-color: color-mix(in srgb, var(--co-trance) 40%, transparent);
+  background: color-mix(in srgb, var(--co-trance) 12%, transparent);
+}
+
+.camp-out-badge.is-assist {
+  color: var(--co-assist);
+  border-color: color-mix(in srgb, var(--co-assist) 40%, transparent);
+  background: color-mix(in srgb, var(--co-assist) 12%, transparent);
 }
 
 .camp-out-badge.is-plan {
-  background: var(--co-ember-dim);
   color: var(--co-ember);
+  border-color: color-mix(in srgb, var(--co-ember) 45%, transparent);
+  background: color-mix(in srgb, var(--co-ember) 12%, transparent);
+}
+
+/* The banner is dark in both themes, so badges sitting on it always need the
+   light-on-dark treatment rather than the theme's own accent colours. */
+.camp-out-banner .camp-out-badge {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #f5efe6;
 }
 
 .camp-out-cell {
-  position: relative;
+  padding: 4px !important;
   text-align: center;
-  border-top: 3px solid var(--cell-color) !important;
+  box-shadow: inset 3px 0 0 var(--cell-color);
 }
 
 .camp-out-cell select {
   width: 100%;
   font-size: 11px;
-  height: 24px;
+  height: 23px;
 }
 
-.camp-out-cell-icon {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 3px;
-  color: var(--cell-color);
+.camp-out-cell.is-assisting select {
+  color: var(--co-assist);
+  border-color: color-mix(in srgb, var(--co-assist) 45%, transparent);
+}
+
+.camp-out-cell.is-asleep select {
+  color: var(--co-muted);
 }
 
 .camp-out-cell.is-resolved {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--co-panel);
 }
 
 .camp-out-row-tools {
   text-align: center;
   white-space: nowrap;
-}
-
-.camp-out-row-tools button {
-  padding: 3px 6px;
+  display: flex;
+  gap: 3px;
+  justify-content: center;
 }
 
 /* -------------------------------------------- */
@@ -343,27 +528,40 @@
 .camp-out-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 4px;
+  margin-top: 8px;
 }
 
 .camp-out-legend-item {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-size: 10.5px;
+  padding: 2px 8px 2px 7px;
+  border-radius: 10px;
   border: 1px solid var(--co-line);
-  border-left: 3px solid var(--cell-color);
-  background: var(--co-panel-raised);
+  box-shadow: inset 3px 0 0 var(--cell-color);
+  background: var(--co-panel);
+  color: var(--co-muted);
   cursor: help;
 }
 
+.camp-out-legend-item i {
+  color: var(--cell-color);
+  font-size: 10px;
+}
+
 .camp-out-hint {
-  margin: 10px 0 0;
-  font-size: 11px;
+  margin: 8px 0 0;
+  font-size: 10.5px;
   color: var(--co-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.camp-out-hint i {
+  flex: 0 0 auto;
 }
 
 .camp-out-muted {
@@ -379,33 +577,43 @@
   height: 100%;
   color: var(--co-muted);
   text-align: center;
+  padding: 24px;
 }
 
 .camp-out-empty i {
-  font-size: 42px;
-  opacity: 0.35;
+  font-size: 38px;
+  opacity: 0.25;
 }
 
 /* -------------------------------------------- */
 /*  Encounter planning                          */
 /* -------------------------------------------- */
 
+.camp-out-watch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .camp-out-watch {
   background: var(--co-panel);
   border: 1px solid var(--co-line);
-  border-left: 4px solid var(--co-night);
-  border-radius: 6px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
+  border-radius: var(--co-radius);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: inset 3px 0 0 var(--co-line-strong);
 }
 
 .camp-out-watch.is-next {
-  border-left-color: var(--co-ember);
-  box-shadow: 0 0 0 1px var(--co-ember-dim);
+  box-shadow: inset 3px 0 0 var(--co-ember);
+  border-color: color-mix(in srgb, var(--co-ember) 35%, var(--co-line));
 }
 
 .camp-out-watch.is-resolved {
-  opacity: 0.72;
+  opacity: 0.65;
 }
 
 .camp-out-watch-header {
@@ -413,65 +621,56 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
 }
 
 .camp-out-watch-header h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
   border: none;
 }
 
 .camp-out-watch-header small {
   font-weight: 400;
   color: var(--co-muted);
-  margin-left: 6px;
+  margin-left: 5px;
+  font-size: 10px;
+}
+
+.camp-out-watch-flags {
+  display: flex;
+  gap: 4px;
 }
 
 .camp-out-watch-roster {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 8px;
+  gap: 4px;
 }
 
 .camp-out-chip {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 10.5px;
   padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(61, 74, 107, 0.1);
-}
-
-.camp-out-field {
-  margin-bottom: 8px;
-}
-
-.camp-out-field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--co-muted);
-  margin-bottom: 2px;
-}
-
-.camp-out input[type="text"],
-.camp-out textarea,
-.camp-out select {
-  width: 100%;
-  font-family: inherit;
-  font-size: 12px;
+  border-radius: 10px;
   background: var(--co-panel-raised);
   border: 1px solid var(--co-line);
-  border-radius: 4px;
-  color: var(--co-ink);
 }
 
-.camp-out textarea {
-  resize: vertical;
-  padding: 4px 6px;
+.camp-out-chip small {
+  color: var(--co-muted);
+  font-size: 9.5px;
+}
+
+.camp-out-chip.is-assist {
+  color: var(--co-assist);
+  border-color: color-mix(in srgb, var(--co-assist) 35%, transparent);
+}
+
+.camp-out-title-input {
+  font-weight: 600;
 }
 
 .camp-out-drop {
@@ -479,37 +678,46 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px;
-  border: 2px dashed var(--co-line);
-  border-radius: 6px;
-  font-size: 11px;
+  padding: 7px;
+  border: 1px dashed var(--co-line-strong);
+  border-radius: var(--co-radius-sm);
+  font-size: 10.5px;
   color: var(--co-muted);
   text-align: center;
+  transition: all 0.12s ease;
 }
 
 .camp-out-drop.is-over {
   border-color: var(--co-ember);
-  background: var(--co-ember-dim);
+  border-style: solid;
+  background: color-mix(in srgb, var(--co-ember) 12%, transparent);
   color: var(--co-ember);
 }
 
 .camp-out-link-list {
   list-style: none;
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .camp-out-link-list li {
   display: flex;
-  gap: 4px;
+  gap: 3px;
 }
 
 .camp-out-link-open {
   flex: 1 1 auto;
-  text-align: left;
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+.camp-out-link-open span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .camp-out-remove {
@@ -529,32 +737,33 @@
 
 .camp-out-timeline-item {
   display: flex;
-  gap: 10px;
-  padding-bottom: 12px;
+  gap: 9px;
+  padding-bottom: 8px;
   position: relative;
 }
 
 .camp-out-timeline-item:not(:last-child)::before {
   content: "";
   position: absolute;
-  left: 13px;
-  top: 30px;
+  left: 12px;
+  top: 26px;
   bottom: 0;
-  width: 2px;
-  background: var(--co-line);
+  width: 1px;
+  background: var(--co-line-strong);
 }
 
 .camp-out-timeline-marker {
-  flex: 0 0 28px;
-  height: 28px;
+  flex: 0 0 25px;
+  height: 25px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--co-panel-raised);
-  border: 2px solid var(--co-line);
+  background: var(--co-bg-alt);
+  border: 1px solid var(--co-line-strong);
+  color: var(--co-muted);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   z-index: 1;
 }
 
@@ -566,6 +775,7 @@
 .camp-out-timeline-item.is-next .camp-out-timeline-marker {
   border-color: var(--co-ember);
   color: var(--co-ember);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--co-ember) 18%, transparent);
 }
 
 .camp-out-timeline-body {
@@ -573,8 +783,11 @@
   min-width: 0;
   background: var(--co-panel);
   border: 1px solid var(--co-line);
-  border-radius: 6px;
-  padding: 8px 10px;
+  border-radius: var(--co-radius);
+  padding: 7px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .camp-out-timeline-body header {
@@ -582,37 +795,60 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
 }
 
 .camp-out-timeline-body h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
   border: none;
+}
+
+.camp-out-timeline-body small {
+  font-weight: 400;
+  color: var(--co-muted);
+  margin-left: 5px;
+  font-size: 10px;
 }
 
 .camp-out-encounter-preview {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: var(--co-ember-dim);
+  padding: 5px 8px;
+  border-radius: var(--co-radius-sm);
+  background: color-mix(in srgb, var(--co-ember) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--co-ember) 30%, transparent);
+}
+
+.camp-out-encounter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
   color: var(--co-ember);
+}
+
+.camp-out-encounter-label strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .camp-out-resolve-footer {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 10px;
+  padding-top: 9px;
+  margin-top: 4px;
   border-top: 1px solid var(--co-line);
 }
 
 .camp-out-finish {
-  font-size: 13px !important;
-  padding: 6px 16px !important;
+  font-size: 12.5px !important;
+  padding: 6px 14px !important;
 }
 
 /* -------------------------------------------- */
@@ -622,19 +858,14 @@
 .camp-out-actor-picker {
   display: flex;
   gap: 4px;
-  padding: 8px 12px 0;
+  padding: 8px 10px 0;
   flex-wrap: wrap;
-}
-
-.camp-out-actor {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  background: var(--co-bg-alt);
 }
 
 .camp-out-actor img {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 3px;
   object-fit: cover;
   border: none;
@@ -642,91 +873,103 @@
 
 .camp-out-actor.is-active {
   border-color: var(--co-ember) !important;
-  background: var(--co-ember-dim) !important;
+  background: color-mix(in srgb, var(--co-ember) 14%, transparent) !important;
 }
 
 .camp-out-watch-row {
   background: var(--co-panel);
   border: 1px solid var(--co-line);
-  border-left: 4px solid var(--co-night);
-  border-radius: 6px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
+  border-radius: var(--co-radius);
+  padding: 7px 9px;
+  margin-bottom: 6px;
+  box-shadow: inset 3px 0 0 var(--co-line-strong);
 }
 
 .camp-out-watch-row.is-current {
-  border-left-color: var(--co-ember);
+  box-shadow: inset 3px 0 0 var(--co-ember);
+}
+
+.camp-out-watch-row.is-assisting {
+  box-shadow: inset 3px 0 0 var(--co-assist);
 }
 
 .camp-out-watch-row.is-resolved {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .camp-out-current-choice {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--co-muted);
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
+.camp-out-current-choice.is-assist {
+  color: var(--co-assist);
+}
+
+/* Sized so all seven actions sit on one row at the sheet's default width, and
+   reflow cleanly if the window is narrowed. */
 .camp-out-action-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
-  gap: 5px;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 4px;
+  margin-top: 6px;
 }
 
 .camp-out-action-card {
-  display: flex !important;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-  padding: 6px 8px !important;
-  text-align: left;
+  align-items: center;
+  gap: 3px !important;
+  padding: 6px 4px !important;
+  text-align: center;
   white-space: normal !important;
-  border-left: 3px solid var(--cell-color) !important;
-  min-height: 58px;
+  box-shadow: inset 0 2px 0 var(--cell-color);
+}
+
+.camp-out-action-card i {
+  font-size: 13px;
+  color: var(--cell-color);
 }
 
 .camp-out-action-card.is-selected {
-  background: var(--co-ember-dim) !important;
-  border-color: var(--co-ember) !important;
-  border-left-color: var(--cell-color) !important;
-  box-shadow: inset 0 0 0 1px var(--co-ember);
+  background: color-mix(in srgb, var(--cell-color) 22%, transparent) !important;
+  border-color: var(--cell-color) !important;
+  color: var(--co-ink);
 }
 
 .camp-out-action-label {
   font-weight: 600;
-  font-size: 12px;
-}
-
-.camp-out-action-summary {
-  font-size: 10px;
-  color: var(--co-muted);
-  line-height: 1.25;
+  font-size: 10.5px;
+  line-height: 1.2;
 }
 
 .camp-out-note {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .camp-out-note label {
   display: block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--co-muted);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .camp-out-party {
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .camp-out-party h3 {
-  font-size: 13px;
-  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 5px;
   border-bottom: 1px solid var(--co-line);
-  padding-bottom: 3px;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .camp-out-party-list {
@@ -735,24 +978,24 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .camp-out-party-list li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   padding: 4px 6px;
   background: var(--co-panel);
   border: 1px solid var(--co-line);
-  border-radius: 4px;
+  border-radius: var(--co-radius-sm);
 }
 
 .camp-out-party-list img {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 3px;
   border: none;
   flex: 0 0 auto;
 }
@@ -760,8 +1003,13 @@
 .camp-out-party-text {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.camp-out-party-text strong {
+  font-size: 11.5px;
 }
 
 .camp-out-party-watches {
@@ -773,38 +1021,53 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 3px;
-  background: rgba(61, 74, 107, 0.12);
-  font-size: 10px;
+  background: var(--co-panel-raised);
+  border: 1px solid var(--co-line);
+  font-size: 9px;
+  color: var(--co-muted);
 }
 
 .camp-out-mini.is-hidden {
-  background: rgba(0, 0, 0, 0.06);
-  color: var(--co-muted);
+  opacity: 0.5;
 }
 
 /* -------------------------------------------- */
 /*  Chat cards                                  */
+/*  These live in Foundry's chat log, so they    */
+/*  inherit its colours instead of ours.         */
 /* -------------------------------------------- */
 
 .camp-out-card {
-  border-left: 3px solid var(--co-ember, #b8562f);
-  padding: 6px 8px;
-  background: rgba(184, 86, 47, 0.05);
-  border-radius: 4px;
+  border-left: 3px solid #e07a45;
+  padding: 6px 9px;
+  background: rgba(224, 122, 69, 0.07);
+  border-radius: var(--co-radius-sm);
+  font-size: 12px;
 }
 
 .camp-out-card h3 {
   margin: 0 0 4px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .camp-out-card h4 {
-  margin: 2px 0;
-  font-size: 13px;
+  margin: 3px 0;
+  font-size: 12px;
+}
+
+.camp-out-card-note {
+  font-size: 10.5px;
+  opacity: 0.7;
+  margin: 5px 0 0;
+  font-style: italic;
 }
 
 .camp-out-card-list,
@@ -822,10 +1085,19 @@
   padding: 2px 0;
 }
 
+.camp-out-card-list li.is-assist {
+  opacity: 0.8;
+}
+
+.camp-out-card-list li.is-failed {
+  border-left: 2px solid #e0603f;
+  padding-left: 5px;
+}
+
 .camp-out-card-list img,
 .camp-out-card-roster img {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   object-fit: cover;
   border-radius: 3px;
   border: none;
@@ -838,14 +1110,14 @@
 }
 
 .camp-out-card-action {
-  font-size: 11px;
-  opacity: 0.85;
+  font-size: 10.5px;
+  opacity: 0.8;
   white-space: nowrap;
 }
 
 .camp-out-card-sleepers {
-  font-size: 11px;
-  opacity: 0.75;
+  font-size: 10.5px;
+  opacity: 0.7;
   margin: 4px 0 0;
 }
 
@@ -855,19 +1127,26 @@
 
 .camp-out-summary-text ul {
   margin: 2px 0 0;
-  padding-left: 16px;
+  padding-left: 15px;
   font-size: 11px;
 }
 
 .camp-out-summary-note {
   font-style: italic;
   font-size: 11px;
-  opacity: 0.8;
+  opacity: 0.75;
   margin: 3px 0 0;
 }
 
-.camp-out-encounter {
-  border-left-color: #8f3f21;
+.camp-out-encounter.is-prep {
+  border-left-color: #8a8f9c;
+  background: rgba(138, 143, 156, 0.08);
+}
+
+.camp-out-encounter.is-sprung,
+.camp-out-broken {
+  border-left-color: #d0402a;
+  background: rgba(208, 64, 42, 0.09);
 }
 
 .camp-out-links {
@@ -881,7 +1160,7 @@
 .camp-out-open {
   font-size: 11px;
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: var(--co-radius-sm);
   cursor: pointer;
 }
 

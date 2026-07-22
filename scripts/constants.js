@@ -13,8 +13,17 @@ export const SOCKET_NAME = `module.${MODULE_ID}`;
 /** Number of watches in a long rest. Kibbles' camp actions assume four. */
 export const WATCH_COUNT = 4;
 
-/** Watches a character must spend asleep to gain the benefit of a long rest. */
-export const REQUIRED_SLEEP_WATCHES = 3;
+/**
+ * Watches a character must spend asleep to earn a long rest.
+ *
+ * Most characters need six hours (three watches). Elves and their kin trance for
+ * four hours instead, which buys them a second free watch rather than exempting
+ * them from resting.
+ */
+export const SLEEP_WATCHES = {
+  normal: 3,
+  trance: 2
+};
 
 /** World/client setting keys. */
 export const SETTINGS = {
@@ -23,7 +32,8 @@ export const SETTINGS = {
   autoInspiration: "autoInspiration",
   autoTranceRest: "autoTranceRest",
   advanceWorldTime: "advanceWorldTime",
-  requireSleep: "requireSleep"
+  requireSleep: "requireSleep",
+  theme: "theme"
 };
 
 /** Module flag keys written onto actors and effects. */

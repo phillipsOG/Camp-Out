@@ -9,9 +9,10 @@
  */
 
 import { WATCH_COUNT, TEMPLATES, SETTINGS, getDragData, loc } from "../constants.js";
-import { CampState, PHASES } from "../camp-state.js";
+import { CampState, PHASES, MODES } from "../camp-state.js";
 import { localizedActions, actionLabel, getAction } from "../actions.js";
 import { setting } from "../settings.js";
+import { applyTheme, toggleTheme, themeContext } from "../theme.js";
 import { confirmDialog, promptForChoice } from "../dialogs.js";
 import { setAssignment, clearAssignments, broadcastOpenSheet } from "../socket.js";
 import {
@@ -26,6 +27,7 @@ import {
   addEncounterLink,
   removeEncounterLink,
   triggerEncounterLink,
+  triggerEncounter,
   grantTranceShortRests,
   defaultParticipants
 } from "../rest.js";
@@ -45,7 +47,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: "fa-solid fa-campground",
       resizable: true
     },
-    position: { width: 860, height: 720 },
+    position: { width: 880, height: 660 },
     actions: {
       begin: CampPlanner.#onBegin,
       cancel: CampPlanner.#onCancel,
@@ -54,11 +56,13 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       complete: CampPlanner.#onComplete,
       notify: CampPlanner.#onNotify,
       tab: CampPlanner.#onTab,
+      theme: CampPlanner.#onTheme,
       addActor: CampPlanner.#onAddActor,
       removeActor: CampPlanner.#onRemoveActor,
       clearActor: CampPlanner.#onClearActor,
       removeLink: CampPlanner.#onRemoveLink,
       triggerLink: CampPlanner.#onTriggerLink,
+      springEncounter: CampPlanner.#onSpringEncounter,
       tranceRest: CampPlanner.#onTranceRest
     }
   };
@@ -87,6 +91,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     const state = CampState.data;
     const actions = localizedActions();
     const resolvedWatches = state.resolved ?? {};
+    const theme = themeContext();
 
     return {
       active: state.active,
@@ -95,6 +100,9 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       resolving: state.phase === PHASES.resolving,
       currentWatch: state.currentWatch,
       watchCount: WATCH_COUNT,
+      theme: theme.theme,
+      themeIcon: theme.icon,
+      themeLabel: theme.label,
       tab: this.#tab,
       tabs: this.#tabContext(),
       isRoster: this.#tab === "roster",
@@ -103,7 +111,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       headers: Array.from({ length: WATCH_COUNT }, (_, i) => ({
         watch: i + 1,
         label: loc("common.watchN", { n: i + 1 }),
-        hours: `${i * 2 + 1}–${i * 2 + 2}`,
+        hours: `${i * 2 + 1}-${i * 2 + 2}`,
         resolved: !!resolvedWatches[i + 1],
         current: state.currentWatch === i + 1
       })),
@@ -129,38 +137,46 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
 
   #participantContext(state, actions) {
     return CampState.participants().map((p) => {
+      const schedule = CampState.scheduleFor(p);
       const sleep = CampState.sleepWatches(p);
+      const assists = CampState.assistWatches(p);
       const rested = CampState.isRested(p);
-      const cells = [];
+      const required = CampState.requiredSleep(p);
 
-      for (let w = 1; w <= WATCH_COUNT; w++) {
-        const assigned = p.assignments?.[w] ?? null;
-        const action = getAction(assigned);
-        cells.push({
-          watch: w,
+      const cells = schedule.map((slot) => {
+        const action = getAction(slot.actionId);
+        const assisting = slot.mode === MODES.assist;
+        return {
+          watch: slot.watch,
           actorId: p.actorId,
-          value: assigned ?? "",
-          label: assigned ? actionLabel(assigned) : loc("common.asleep"),
-          icon: action?.icon ?? "fa-solid fa-bed",
+          value: slot.actionId ?? "",
+          mode: slot.mode,
+          assisting,
+          asleep: slot.mode === MODES.sleep,
+          label: action ? actionLabel(action.id) : loc(assisting ? "common.assisting" : "common.asleep"),
+          emptyLabel: loc(assisting ? "common.assisting" : "common.asleep"),
+          icon: action?.icon ?? (assisting ? "fa-solid fa-hands-holding-circle" : "fa-solid fa-bed"),
           color: action?.color ?? "transparent",
-          resolved: !!state.resolved?.[w],
+          resolved: !!state.resolved?.[slot.watch],
           options: actions.map((a) => ({
             id: a.id,
             label: a.label,
-            selected: a.id === assigned
+            selected: a.id === slot.actionId
           }))
-        });
-      }
+        };
+      });
 
       return {
         ...p,
         cells,
         sleepWatches: sleep,
+        assistWatches: assists,
         rested,
-        statusIcon: rested ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation",
+        statusIcon: rested ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation",
         statusLabel: rested
-          ? loc("planner.rested", { count: sleep })
-          : loc("planner.underslept", { count: sleep }),
+          ? loc("planner.rested", { hours: sleep * 2 })
+          : loc("planner.underslept", { hours: sleep * 2, need: required * 2 }),
+        assistLabel: assists ? loc("planner.assisting", { count: assists }) : null,
         readyLabel: p.ready ? loc("planner.ready") : loc("planner.notReady")
       };
     });
@@ -171,6 +187,16 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     for (let w = 1; w <= WATCH_COUNT; w++) {
       const encounter = CampState.encounter(w);
       const resolved = state.resolved?.[w] ?? null;
+      const entries = (resolved?.entries ?? CampState.awakeDuring(w).map(({ participant, action, mode }) => ({
+        actorId: participant.actorId,
+        name: participant.name,
+        img: participant.img,
+        mode,
+        assisting: mode === MODES.assist,
+        actionLabel: action ? actionLabel(action.id) : loc("common.assisting"),
+        icon: action?.icon ?? "fa-solid fa-hands-holding-circle"
+      })));
+
       watches.push({
         watch: w,
         label: loc("common.watchN", { n: w }),
@@ -178,13 +204,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
         encounter,
         hasPlan: !!(encounter.title || encounter.text || encounter.links.length),
         resolved: !!resolved,
-        entries: resolved?.entries ?? CampState.awakeDuring(w).map(({ participant, action }) => ({
-          actorId: participant.actorId,
-          name: participant.name,
-          img: participant.img,
-          actionLabel: actionLabel(action.id),
-          icon: action.icon
-        })),
+        entries,
         isNext: state.currentWatch === w,
         canResolve: state.phase === PHASES.resolving && state.currentWatch === w
       });
@@ -205,6 +225,8 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     const root = this.element;
     if (!root) return;
 
+    applyTheme(this);
+
     // Shift grid: assigning an action for a participant on a watch.
     for (const select of root.querySelectorAll("select[data-assign]")) {
       select.addEventListener("change", async (event) => {
@@ -221,7 +243,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    // Encounter fields save on blur so a stray re-render cannot eat typing.
+    // Encounter fields save on change so a stray re-render cannot eat typing.
     for (const field of root.querySelectorAll("[data-encounter-field]")) {
       field.addEventListener("change", (event) => {
         const el = event.currentTarget;
@@ -258,6 +280,11 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render(false);
   }
 
+  static async #onTheme() {
+    await toggleTheme();
+    this.render(false);
+  }
+
   static async #onBegin() {
     await beginCamp();
     this.#tab = "roster";
@@ -286,6 +313,12 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
     const ok = await confirmDialog(loc("dialogs.complete.title"), loc("dialogs.complete.content"));
     if (!ok) return;
     await completeCamp();
+    this.render(false);
+  }
+
+  static async #onSpringEncounter(event, target) {
+    await triggerEncounter(Number(target.dataset.watch));
+    this.#tab = "roster";
     this.render(false);
   }
 

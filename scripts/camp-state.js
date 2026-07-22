@@ -1,20 +1,32 @@
 /**
  * Camp state: the shared record of who is doing what, on which watch.
  *
- * The whole object lives in one world setting. Only a GM ever writes to it —
+ * The whole object lives in one world setting. Only a GM ever writes to it -
  * player edits arrive over the socket and are applied by the GM client (see
  * socket.js). Every client reacts to the resulting `updateSetting` hook, so
  * reads are always local and cheap.
  */
 
-import { MODULE_ID, SETTINGS, WATCH_COUNT, REQUIRED_SLEEP_WATCHES } from "./constants.js";
-import { CAMP_ACTIONS, getAction, hasTrance } from "./actions.js";
+import { MODULE_ID, SETTINGS, WATCH_COUNT, SLEEP_WATCHES } from "./constants.js";
+import { CAMP_ACTIONS, CATEGORY, getAction, hasTrance } from "./actions.js";
 
 export const PHASES = {
   idle: "idle",
   planning: "planning",
   resolving: "resolving",
   complete: "complete"
+};
+
+/**
+ * What a character is doing during a given watch.
+ * - `action`: performing an assigned camp action.
+ * - `assist`: awake with nothing assigned, lending an extra pair of eyes.
+ * - `sleep`: asleep.
+ */
+export const MODES = {
+  action: "action",
+  assist: "assist",
+  sleep: "sleep"
 };
 
 /** @returns {object} A pristine, inactive camp. */
@@ -68,7 +80,7 @@ export class CampState {
   }
 
   /**
-   * Persist a whole state object. GM only — callers on a player client must go
+   * Persist a whole state object. GM only - callers on a player client must go
    * through the socket instead.
    * @param {object} data
    */
@@ -106,30 +118,68 @@ export class CampState {
     });
   }
 
-  /**
-   * Every participant awake during a watch, with the action they are performing.
-   * @param {number} watch
-   * @returns {Array<{participant: object, action: object}>}
-   */
-  static awakeDuring(watch) {
-    const out = [];
-    for (const p of this.participants()) {
-      const id = p.assignments?.[watch];
-      const action = getAction(id);
-      if (action && action.id !== "slumber") out.push({ participant: p, action });
-    }
-    return out;
+  /* -------------------------------------------- */
+  /*  Sleep and scheduling                        */
+  /* -------------------------------------------- */
+
+  /** Watches this participant must spend asleep. Trance characters need fewer. */
+  static requiredSleep(participant) {
+    return participant?.trance ? SLEEP_WATCHES.trance : SLEEP_WATCHES.normal;
   }
 
-  /** Watches this participant has left unassigned, i.e. spends asleep. */
-  static sleepWatches(participant) {
-    if (!participant) return 0;
-    if (this.isSlumbering(participant)) return WATCH_COUNT;
-    let count = 0;
-    for (let w = 1; w <= WATCH_COUNT; w++) {
-      if (!participant.assignments?.[w]) count++;
+  /** Free watches this participant has to spend, after sleep is accounted for. */
+  static freeWatches(participant) {
+    return WATCH_COUNT - this.requiredSleep(participant);
+  }
+
+  /**
+   * Work out what a participant is doing across the whole night.
+   *
+   * Watches with an explicit action are `action`. The rest are sleep, except
+   * that any waking time left over once the sleep requirement is met becomes
+   * `assist`: the character is up, unoccupied, and quietly helping whoever has
+   * the watch. Surplus falls on the earliest free watches so the result is
+   * stable and predictable rather than depending on iteration order.
+   *
+   * @param {object} participant
+   * @returns {Array<{watch: number, actionId: string|null, mode: string}>}
+   */
+  static scheduleFor(participant) {
+    const schedule = [];
+    if (!participant) return schedule;
+
+    if (this.isSlumbering(participant)) {
+      for (let w = 1; w <= WATCH_COUNT; w++) {
+        schedule.push({ watch: w, actionId: "slumber", mode: MODES.sleep });
+      }
+      return schedule;
     }
-    return count;
+
+    const free = [];
+    for (let w = 1; w <= WATCH_COUNT; w++) {
+      const actionId = participant.assignments?.[w] ?? null;
+      if (actionId) {
+        schedule.push({ watch: w, actionId, mode: MODES.action });
+      } else {
+        schedule.push({ watch: w, actionId: null, mode: MODES.sleep });
+        free.push(schedule.length - 1);
+      }
+    }
+
+    const surplus = Math.max(0, free.length - this.requiredSleep(participant));
+    for (let i = 0; i < surplus; i++) schedule[free[i]].mode = MODES.assist;
+
+    return schedule;
+  }
+
+  /** Watches this participant actually spends asleep. */
+  static sleepWatches(participant) {
+    return this.scheduleFor(participant).filter((s) => s.mode === MODES.sleep).length;
+  }
+
+  /** Watches this participant spends awake but unoccupied, assisting the watch. */
+  static assistWatches(participant) {
+    return this.scheduleFor(participant).filter((s) => s.mode === MODES.assist).length;
   }
 
   /** Has this participant committed the whole night to Slumber? */
@@ -139,31 +189,51 @@ export class CampState {
   }
 
   /**
-   * Whether a participant's plan satisfies the six-hours-of-sleep requirement.
-   * Trance characters need less rest, so they are always considered rested.
+   * Whether a participant's plan leaves them enough sleep for a long rest.
    * @param {object} participant
    * @returns {boolean}
    */
   static isRested(participant) {
     if (!participant) return false;
-    if (participant.trance) return true;
-    return this.sleepWatches(participant) >= REQUIRED_SLEEP_WATCHES;
+    return this.sleepWatches(participant) >= this.requiredSleep(participant);
   }
 
   /**
+   * Every participant awake during a watch, whether working or assisting.
+   * @param {number} watch
+   * @returns {Array<{participant: object, action: object|null, mode: string}>}
+   */
+  static awakeDuring(watch) {
+    const out = [];
+    for (const p of this.participants()) {
+      const slot = this.scheduleFor(p).find((s) => s.watch === watch);
+      if (!slot || slot.mode === MODES.sleep) continue;
+      out.push({
+        participant: p,
+        action: getAction(slot.actionId),
+        mode: slot.mode
+      });
+    }
+    return out;
+  }
+
+  /* -------------------------------------------- */
+  /*  Validation                                  */
+  /* -------------------------------------------- */
+
+  /**
    * Validate a proposed assignment against the camp action rules.
-   * Returns null when the assignment is legal, otherwise an i18n key explaining
-   * why it is not.
    *
-   * @param {object} participant  The participant as they currently stand.
-   * @param {number} watch        Watch being assigned.
+   * @param {object} participant   The participant as they currently stand.
+   * @param {number} watch         Watch being assigned.
    * @param {string|null} actionId Action to place there, or null to clear it.
-   * @returns {string|null} An i18n key under `CAMPOUT.errors`, or null.
+   * @returns {{key: string, data: object}|null} An error under `CAMPOUT.errors`,
+   *   or null when the assignment is legal.
    */
   static validateAssignment(participant, watch, actionId) {
     if (!actionId) return null;
     const action = getAction(actionId);
-    if (!action) return "unknownAction";
+    if (!action) return { key: "unknownAction", data: {} };
 
     // Slumber owns the entire night; picking it always replaces whatever was
     // planned, and picking anything else wakes the character back up.
@@ -178,17 +248,19 @@ export class CampState {
     // Non-repeatable actions may appear only once across the night.
     if (!action.repeatable) {
       const uses = taken.filter(([, id]) => id === actionId).length;
-      if (uses > 1) return "actionOnce";
+      if (uses > 1) return { key: "actionOnce", data: { action: actionId } };
     }
 
-    // Kibbles allows one camp action per night. Trance characters may stack
-    // watches on top of it, but still only one *other* action.
-    const nonWatch = taken.filter(([, id]) => id !== "watch").length;
-    const limit = 1;
-    if (nonWatch > limit) return participant.trance ? "tranceOneAction" : "oneActionPerNight";
+    // One real camp action per night. Watches and Tasks are fillers.
+    const primaries = taken.filter(([, id]) => CAMP_ACTIONS[id]?.category === CATEGORY.primary);
+    if (primaries.length > 1) return { key: "oneActionPerNight", data: {} };
 
-    if (!participant.trance && taken.length > WATCH_COUNT - REQUIRED_SLEEP_WATCHES) {
-      return "notEnoughSleep";
+    const free = this.freeWatches(participant);
+    if (taken.length > free) {
+      return {
+        key: "notEnoughSleep",
+        data: { hours: this.requiredSleep(participant) * 2, free }
+      };
     }
 
     return null;

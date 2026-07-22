@@ -7,8 +7,9 @@
         <option value="">{{localize "CAMPOUT.planner.noneToAdd"}}</option>
       {{/each}}
     </select>
-    <button type="button" data-action="addActor">
-      <i class="fa-solid fa-user-plus"></i> {{localize "CAMPOUT.planner.addActor"}}
+    <button type="button" class="camp-out-icon-btn" data-action="addActor"
+            data-tooltip="{{localize 'CAMPOUT.planner.addActor'}}">
+      <i class="fa-solid fa-user-plus"></i>
     </button>
   </div>
 
@@ -25,7 +26,8 @@
       <th class="camp-out-col-who">{{localize "CAMPOUT.planner.character"}}</th>
       {{#each headers}}
         <th class="camp-out-col-watch {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}}">
-          {{label}}<span class="camp-out-hours">{{hours}}</span>
+          <span class="camp-out-th-label">{{label}}</span>
+          <span class="camp-out-hours">{{hours}}</span>
         </th>
       {{/each}}
       <th class="camp-out-col-tools"></th>
@@ -38,21 +40,22 @@
           <img src="{{img}}" alt="{{name}}" />
           <div class="camp-out-who-text">
             <strong>{{name}}</strong>
-            <span class="camp-out-status {{#if rested}}is-good{{else}}is-bad{{/if}}">
-              <i class="{{statusIcon}}"></i> {{statusLabel}}
-            </span>
-            <span class="camp-out-badges">
+            <span class="camp-out-meta">
+              <span class="camp-out-status {{#if rested}}is-good{{else}}is-bad{{/if}}">
+                <i class="{{statusIcon}}"></i> {{statusLabel}}
+              </span>
               {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
               {{#if ready}}<span class="camp-out-badge is-ready">{{readyLabel}}</span>{{/if}}
+              {{#if assistLabel}}<span class="camp-out-badge is-assist">{{assistLabel}}</span>{{/if}}
             </span>
           </div>
         </td>
 
         {{#each cells}}
-          <td class="camp-out-cell {{#if resolved}}is-resolved{{/if}}" style="--cell-color: {{color}}">
-            <i class="camp-out-cell-icon {{icon}}"></i>
+          <td class="camp-out-cell {{#if resolved}}is-resolved{{/if}} {{#if assisting}}is-assisting{{/if}} {{#if asleep}}is-asleep{{/if}}"
+              style="--cell-color: {{color}}">
             <select data-assign data-actor-id="{{actorId}}" data-watch="{{watch}}" {{#if resolved}}disabled{{/if}}>
-              <option value="">{{localize "CAMPOUT.common.asleep"}}</option>
+              <option value="">{{emptyLabel}}</option>
               {{#each options}}
                 <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
               {{/each}}
@@ -61,11 +64,11 @@
         {{/each}}
 
         <td class="camp-out-row-tools">
-          <button type="button" data-action="clearActor" data-actor-id="{{actorId}}"
+          <button type="button" class="camp-out-icon-btn" data-action="clearActor" data-actor-id="{{actorId}}"
                   data-tooltip="{{localize 'CAMPOUT.planner.clearRow'}}">
             <i class="fa-solid fa-eraser"></i>
           </button>
-          <button type="button" data-action="removeActor" data-actor-id="{{actorId}}"
+          <button type="button" class="camp-out-icon-btn" data-action="removeActor" data-actor-id="{{actorId}}"
                   data-tooltip="{{localize 'CAMPOUT.planner.removeActor'}}">
             <i class="fa-solid fa-user-minus"></i>
           </button>
@@ -82,6 +85,10 @@
     </span>
   {{/each}}
 </div>
+
+<p class="camp-out-hint">
+  <i class="fa-solid fa-hands-holding-circle"></i> {{localize "CAMPOUT.planner.assistHint"}}
+</p>
 
 {{#unless revealActions}}
   <p class="camp-out-hint">

@@ -7,7 +7,7 @@
   {{#if anyAwake}}
     <ul class="camp-out-card-list">
       {{#each entries}}
-        <li>
+        <li class="{{#if assisting}}is-assist{{/if}}">
           <img src="{{img}}" alt="{{name}}" />
           <span class="camp-out-card-name">{{name}}</span>
           <span class="camp-out-card-action"><i class="{{icon}}"></i> {{actionLabel}}</span>

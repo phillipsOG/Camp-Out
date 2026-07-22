@@ -1,5 +1,5 @@
 /**
- * Camp Out — entry point.
+ * Camp Out - entry point.
  *
  * Wires up settings, the socket relay, scene controls, chat interactivity and
  * the public API. Kibbles' Camp Actions rules are implemented in actions.js,
@@ -10,7 +10,7 @@ import { MODULE_ID, SETTINGS, TEMPLATES, WATCH_COUNT, loadTpls } from "./constan
 import { registerSettings } from "./settings.js";
 import { registerSocket, broadcastOpenSheet, refreshApps } from "./socket.js";
 import { CampState } from "./camp-state.js";
-import { CAMP_ACTIONS, hasTrance } from "./actions.js";
+import { CAMP_ACTIONS, hasTrance, speciesName } from "./actions.js";
 import { spendPreparationDie } from "./effects.js";
 import {
   beginCamp,
@@ -19,6 +19,7 @@ import {
   resolveWatch,
   startResolving,
   grantTranceShortRests,
+  triggerEncounter,
   triggerEncounterLink,
   defaultParticipants
 } from "./rest.js";
@@ -53,10 +54,12 @@ Hooks.once("ready", () => {
     completeCamp,
     resolveWatch,
     startResolving,
+    triggerEncounter,
     grantTranceShortRests,
     spendPreparationDie,
     defaultParticipants,
     hasTrance,
+    speciesName,
     notifyPlayers: broadcastOpenSheet,
     get state() {
       return CampState.data;

@@ -8,7 +8,7 @@
   {{#each watches}}
     <li class="camp-out-timeline-item {{#if resolved}}is-resolved{{/if}} {{#if isNext}}is-next{{/if}}">
       <div class="camp-out-timeline-marker">
-        {{#if resolved}}<i class="fa-solid fa-circle-check"></i>{{else}}<span>{{watch}}</span>{{/if}}
+        {{#if resolved}}<i class="fa-solid fa-check"></i>{{else}}<span>{{watch}}</span>{{/if}}
       </div>
 
       <div class="camp-out-timeline-body">
@@ -23,7 +23,9 @@
 
         <div class="camp-out-watch-roster">
           {{#each entries}}
-            <span class="camp-out-chip"><i class="{{icon}}"></i> {{name}} &mdash; {{actionLabel}}</span>
+            <span class="camp-out-chip {{#if assisting}}is-assist{{/if}}">
+              <i class="{{icon}}"></i> {{name}} <small>{{actionLabel}}</small>
+            </span>
           {{else}}
             <em class="camp-out-muted">{{localize "CAMPOUT.planner.allAsleep"}}</em>
           {{/each}}
@@ -31,8 +33,14 @@
 
         {{#if hasPlan}}
           <div class="camp-out-encounter-preview">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <strong>{{#if encounter.title}}{{encounter.title}}{{else}}{{localize "CAMPOUT.planner.plannedEvent"}}{{/if}}</strong>
+            <div class="camp-out-encounter-label">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <strong>{{#if encounter.title}}{{encounter.title}}{{else}}{{localize "CAMPOUT.planner.plannedEvent"}}{{/if}}</strong>
+            </div>
+            <button type="button" class="camp-out-danger-solid" data-action="springEncounter" data-watch="{{watch}}"
+                    data-tooltip="{{localize 'CAMPOUT.planner.springHint'}}">
+              <i class="fa-solid fa-burst"></i> {{localize "CAMPOUT.planner.spring"}}
+            </button>
           </div>
         {{/if}}
       </div>
@@ -51,6 +59,6 @@
   </button>
 </footer>
 
-{{#unless allResolved}}
-  <p class="camp-out-hint camp-out-muted">{{localize "CAMPOUT.planner.completeEarlyHint"}}</p>
-{{/unless}}
+<p class="camp-out-hint camp-out-muted">
+  <i class="fa-solid fa-burst"></i> {{localize "CAMPOUT.planner.springWarning"}}
+</p>

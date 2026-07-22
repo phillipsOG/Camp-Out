@@ -51,6 +51,25 @@ export function registerSettings() {
     default: true
   });
 
+  // Client-scoped: each user picks the look they want, dark out of the box.
+  game.settings.register(MODULE_ID, SETTINGS.theme, {
+    name: loc("settings.theme.name"),
+    hint: loc("settings.theme.hint"),
+    scope: "client",
+    config: true,
+    type: String,
+    choices: {
+      dark: loc("settings.theme.dark"),
+      light: loc("settings.theme.light")
+    },
+    default: "dark",
+    onChange: () => {
+      for (const app of foundry.applications?.instances?.values?.() ?? []) {
+        if (app?.constructor?.CAMP_OUT_APP) app.render(false);
+      }
+    }
+  });
+
   game.settings.register(MODULE_ID, SETTINGS.advanceWorldTime, {
     name: loc("settings.advanceWorldTime.name"),
     hint: loc("settings.advanceWorldTime.hint"),

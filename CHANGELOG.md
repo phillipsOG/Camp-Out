@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.1.0
+
+**Trance now shortens sleep instead of skipping it.** Elves, eladrin, drow and warforged
+need four hours (two watches) rather than six, which buys them a second free watch rather
+than exempting them from the sleep requirement entirely.
+
+**Spare waking hours are put to use.** A watch a character is awake for but has not filled
+becomes *Assisting*: they are up and helping whoever has the guard, and they are listed as
+such on the roster and in the watch chat cards. Tasks are now repeatable, so that time can
+be spent productively instead.
+
+**Springing an encounter ends the camp.** Each planned watch gets a *Spring It* button.
+Using it reveals the encounter to the table and closes the camp on the spot, with no long
+rest and no camp action benefits for anyone. Resolving a watch no longer reveals its
+encounter by itself: your notes stay whispered until you choose to act.
+
+**Species detection rewritten.** Trance is determined from the character's species/race
+item (dnd5e 4.x) or `system.details.race` (3.x), falling back to traits named *Trance* or
+*Sentry's Rest*. Unrelated elf-flavoured feats on a sleeping species no longer trigger it,
+and half-elves are excluded.
+
+**Dark mode, on by default.** Both windows ship dark with a per-user light theme, toggled
+from the header button or from Configure Settings. The interface has been tightened
+throughout: denser grid, smaller action cards, two-column encounter prep.
+
+Also:
+
+- The long rest result is now checked per character. If the system call fails, the summary
+  says so instead of implying a rest that never happened.
+- All em and en dashes replaced with plain hyphens.
+- New `camp-out.campBroken` hook, and `triggerEncounter` / `speciesName` added to the API.
+
 ## 1.0.0
 
 First release.
@@ -12,6 +44,5 @@ First release.
 - Automated benefits on breaking camp: system long rest, Cook's extra hit dice and
   temporary hit points, Slumber's Inspiration and doubled exhaustion recovery, and the
   Prepare die as a tracked Active Effect that steps down as it is spent.
-- Elves, eladrin and warforged are detected automatically and receive a short rest at
-  the midpoint of the night.
+- Elves, eladrin and warforged detected automatically, with a short rest at the midpoint.
 - Foundry v12 and v13, dnd5e 3.x and 4.x, no dependencies.

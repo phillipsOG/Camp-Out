@@ -260,36 +260,49 @@ export async function reduceExhaustion(actor, amount = 1) {
 /* -------------------------------------------- */
 
 /**
- * Trigger a system long rest. dnd5e has reshaped this signature across major
- * versions, so fall back to the bare call if the config object is rejected.
+ * Trigger a system long rest.
+ *
+ * dnd5e has reshaped this signature across major versions, so the config object
+ * is tried first and a bare call second. The result reports whether the rest
+ * actually happened, so the camp summary can say so plainly instead of implying
+ * a rest that silently failed.
+ *
+ * @returns {Promise<{ok: boolean, reason?: string}>}
  */
 export async function longRestActor(actor, { newDay = true } = {}) {
-  if (!isDnd5e()) return null;
+  if (!isDnd5e()) return { ok: false, reason: "system" };
   try {
-    return await actor.longRest({ dialog: false, chat: false, newDay, advanceTime: false });
+    await actor.longRest({ dialog: false, chat: false, newDay, advanceTime: false });
+    return { ok: true };
   } catch (err) {
     console.warn(`${MODULE_ID} | longRest config rejected, retrying with defaults`, err);
     try {
-      return await actor.longRest();
+      await actor.longRest();
+      return { ok: true };
     } catch (inner) {
       console.error(`${MODULE_ID} | Long rest failed for ${actor.name}`, inner);
-      return null;
+      return { ok: false, reason: "error" };
     }
   }
 }
 
-/** Trigger a system short rest, used for trance/sentry characters mid-night. */
+/**
+ * Trigger a system short rest, used for trance/sentry characters mid-night.
+ * @returns {Promise<{ok: boolean, reason?: string}>}
+ */
 export async function shortRestActor(actor) {
-  if (!isDnd5e()) return null;
+  if (!isDnd5e()) return { ok: false, reason: "system" };
   try {
-    return await actor.shortRest({ dialog: false, chat: false, autoHD: false, advanceTime: false });
+    await actor.shortRest({ dialog: false, chat: false, autoHD: false, advanceTime: false });
+    return { ok: true };
   } catch (err) {
     console.warn(`${MODULE_ID} | shortRest config rejected, retrying with defaults`, err);
     try {
-      return await actor.shortRest();
+      await actor.shortRest();
+      return { ok: true };
     } catch (inner) {
       console.error(`${MODULE_ID} | Short rest failed for ${actor.name}`, inner);
-      return null;
+      return { ok: false, reason: "error" };
     }
   }
 }

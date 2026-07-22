@@ -113,7 +113,7 @@ export async function setAssignment(actorId, watch, actionId, choice) {
 
   const error = CampState.validateAssignment(participant, watch, actionId);
   if (error) {
-    notifyUser(actorId, loc(`errors.${error}`));
+    notifyUser(actorId, loc(`errors.${error.key}`, error.data));
     return;
   }
 

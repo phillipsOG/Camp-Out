@@ -5,8 +5,9 @@
       {{#if active}}
         <h2><i class="fa-solid fa-fire"></i> {{localize "CAMPOUT.planner.campActive"}}</h2>
         {{#if planning}}
-          <p>{{localize "CAMPOUT.planner.phasePlanning"}} &mdash;
-            {{ready.ready}}/{{ready.total}} {{localize "CAMPOUT.planner.playersReady"}}</p>
+          <p>{{localize "CAMPOUT.planner.phasePlanning"}}
+            <span class="camp-out-count">{{ready.ready}}/{{ready.total}} {{localize "CAMPOUT.planner.playersReady"}}</span>
+          </p>
         {{else}}
           <p>{{localize "CAMPOUT.planner.phaseResolving"}}</p>
         {{/if}}
@@ -17,6 +18,10 @@
     </div>
 
     <div class="camp-out-banner-tools">
+      <button type="button" class="camp-out-icon-btn" data-action="theme"
+              data-tooltip="{{themeLabel}}" aria-label="{{themeLabel}}">
+        <i class="{{themeIcon}}"></i>
+      </button>
       {{#if active}}
         <button type="button" data-action="notify">
           <i class="fa-solid fa-bell"></i> {{localize "CAMPOUT.planner.notify"}}
@@ -36,7 +41,7 @@
     {{#each tabs}}
       <button type="button" class="camp-out-tab {{#if active}}is-active{{/if}}"
               data-action="tab" data-tab-id="{{id}}">
-        <i class="{{icon}}"></i> {{label}}
+        <i class="{{icon}}"></i> <span>{{label}}</span>
       </button>
     {{/each}}
   </nav>

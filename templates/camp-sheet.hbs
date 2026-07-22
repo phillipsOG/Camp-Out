@@ -14,15 +14,21 @@
           {{#if slumbering}}
             {{localize "CAMPOUT.sheet.slumbering"}}
           {{else if rested}}
-            {{localize "CAMPOUT.sheet.rested"}}
+            {{localize "CAMPOUT.sheet.rested" }}
           {{else}}
             {{localize "CAMPOUT.sheet.underslept"}}
           {{/if}}
+          <span class="camp-out-count">{{sleepHours}}/{{requiredHours}}h</span>
           {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
+          {{#if assistWatches}}<span class="camp-out-badge is-assist">{{localize "CAMPOUT.sheet.assisting"}}</span>{{/if}}
         </p>
       </div>
 
       <div class="camp-out-banner-tools">
+        <button type="button" class="camp-out-icon-btn" data-action="theme"
+                data-tooltip="{{themeLabel}}" aria-label="{{themeLabel}}">
+          <i class="{{themeIcon}}"></i>
+        </button>
         <button type="button" data-action="clear" {{#if locked}}disabled{{/if}}>
           <i class="fa-solid fa-eraser"></i> {{localize "CAMPOUT.sheet.clear"}}
         </button>
@@ -41,7 +47,7 @@
         {{#each characters}}
           <button type="button" class="camp-out-actor {{#if active}}is-active{{/if}}"
                   data-action="selectActor" data-actor-id="{{actorId}}">
-            <img src="{{img}}" alt="{{name}}" /> {{name}}
+            <img src="{{img}}" alt="{{name}}" /> <span>{{name}}</span>
           </button>
         {{/each}}
       </nav>
@@ -55,10 +61,10 @@
       {{/if}}
 
       {{#each rows}}
-        <section class="camp-out-watch-row {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}}">
+        <section class="camp-out-watch-row {{#if resolved}}is-resolved{{/if}} {{#if current}}is-current{{/if}} {{#if assisting}}is-assisting{{/if}}">
           <header class="camp-out-watch-header">
             <h3>{{label}} <small>{{hours}}</small></h3>
-            <span class="camp-out-current-choice">
+            <span class="camp-out-current-choice {{#if assisting}}is-assist{{/if}}">
               <i class="{{assignedIcon}}"></i> {{assignedLabel}}
             </span>
           </header>
@@ -73,7 +79,6 @@
                       {{#if ../resolved}}disabled{{/if}}>
                 <i class="{{icon}}"></i>
                 <span class="camp-out-action-label">{{label}}</span>
-                <span class="camp-out-action-summary">{{summary}}</span>
               </button>
             {{/each}}
           </div>
@@ -82,7 +87,7 @@
 
       <section class="camp-out-note">
         <label>{{localize "CAMPOUT.sheet.note"}}</label>
-        <textarea data-note rows="3"
+        <textarea data-note rows="2"
                   placeholder="{{localize 'CAMPOUT.sheet.notePlaceholder'}}">{{note}}</textarea>
       </section>
 
@@ -104,6 +109,7 @@
                     {{/each}}
                   </span>
                 </div>
+                {{#if trance}}<span class="camp-out-badge is-trance">{{localize "CAMPOUT.common.trance"}}</span>{{/if}}
                 {{#if ready}}<span class="camp-out-badge is-ready">{{localize "CAMPOUT.planner.ready"}}</span>{{/if}}
               </li>
             {{/each}}
