@@ -415,7 +415,12 @@
 
 .camp-out-who {
   display: flex;
-  align-items: center;
+  /* Top, not center: the avatar must line up with the row-tools buttons,
+     which now anchor to the row's top edge (see .camp-out-grid td above).
+     Centering the avatar against its own name+badges block instead pushes it
+     toward the middle of however tall that block gets, drifting away from
+     the buttons on any row with a wrapped name or extra badges. */
+  align-items: flex-start;
   gap: 7px;
 }
 

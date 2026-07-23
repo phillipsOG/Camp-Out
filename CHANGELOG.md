@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.7
+
+**Fix: 1.1.6's alignment fix only moved the problem.** Anchoring table cells to the top
+of the row fixed the row-tools buttons, but exposed a second mismatch: the character
+portrait was still centred against its own name-and-badges block rather than the row
+itself, so on a row with a wrapped name or extra badges the portrait drifted toward the
+middle while the buttons sat pinned at the top. The portrait now anchors to the top of
+its block too, so it lines up with the row-tools buttons on every row regardless of how
+much text or how many badges that row stacks underneath.
+
 ## 1.1.6
 
 **Fix: the row-tools buttons on Roster & Shifts drifted out of alignment.** Table cells
