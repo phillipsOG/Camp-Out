@@ -361,12 +361,7 @@
 .camp-out-grid th,
 .camp-out-grid td {
   padding: 5px 6px;
-  /* Top, not middle: a row's height is set by whichever cell wraps the most
-     (usually a long character name plus badges), and centering the shorter
-     cells - the watch selects, the row-tools buttons - within that taller
-     row makes them drift down relative to shorter rows. Anchoring every
-     cell to the top keeps them level regardless of row height. */
-  vertical-align: top;
+  vertical-align: middle;
   border-bottom: 1px solid var(--co-line);
 }
 
@@ -415,12 +410,7 @@
 
 .camp-out-who {
   display: flex;
-  /* Top, not center: the avatar must line up with the row-tools buttons,
-     which now anchor to the row's top edge (see .camp-out-grid td above).
-     Centering the avatar against its own name+badges block instead pushes it
-     toward the middle of however tall that block gets, drifting away from
-     the buttons on any row with a wrapped name or extra badges. */
-  align-items: flex-start;
+  align-items: center;
   gap: 7px;
 }
 
@@ -540,10 +530,19 @@
   background: var(--co-panel);
 }
 
+/* The cell stays a normal table-cell so `vertical-align: middle` (from the grid
+   td rule) centres its contents in the row. Do NOT put `display: flex` on the
+   td itself: Chromium does not stretch a flex table-cell to the row height, so
+   it collapses to its content height and bottom-anchors, dropping the buttons
+   out of line with the selects on any taller row. The flex layout lives on the
+   inner wrapper instead. */
 .camp-out-row-tools {
   text-align: center;
   white-space: nowrap;
-  display: flex;
+}
+
+.camp-out-row-tools-inner {
+  display: inline-flex;
   gap: 3px;
   justify-content: center;
 }

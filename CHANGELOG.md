@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.8
+
+**Fix (properly this time): the roster row-tools buttons are now level with the selects.**
+The real cause, missed by 1.1.6 and 1.1.7, was `display: flex` on the row-tools table
+cell. Chromium does not stretch a flex `<td>` to the row height, so the cell collapsed to
+its content height and bottom-anchored, dropping the clear and remove buttons out of line
+with the watch selects, and further on taller rows. The cell is now a plain table cell
+(which honours `vertical-align: middle`) with the flex layout moved to an inner wrapper.
+Measured pixel-exact against short and tall rows before release.
+
 ## 1.1.7
 
 **Fix: 1.1.6's alignment fix only moved the problem.** Anchoring table cells to the top

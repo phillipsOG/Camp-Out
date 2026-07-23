@@ -64,14 +64,16 @@
         {{/each}}
 
         <td class="camp-out-row-tools">
-          <button type="button" class="camp-out-icon-btn" data-action="clearActor" data-actor-id="{{actorId}}"
-                  data-tooltip="{{localize 'CAMPOUT.planner.clearRow'}}">
-            <i class="fa-solid fa-eraser"></i>
-          </button>
-          <button type="button" class="camp-out-icon-btn" data-action="removeActor" data-actor-id="{{actorId}}"
-                  data-tooltip="{{localize 'CAMPOUT.planner.removeActor'}}">
-            <i class="fa-solid fa-user-minus"></i>
-          </button>
+          <div class="camp-out-row-tools-inner">
+            <button type="button" class="camp-out-icon-btn" data-action="clearActor" data-actor-id="{{actorId}}"
+                    data-tooltip="{{localize 'CAMPOUT.planner.clearRow'}}">
+              <i class="fa-solid fa-eraser"></i>
+            </button>
+            <button type="button" class="camp-out-icon-btn" data-action="removeActor" data-actor-id="{{actorId}}"
+                    data-tooltip="{{localize 'CAMPOUT.planner.removeActor'}}">
+              <i class="fa-solid fa-user-minus"></i>
+            </button>
+          </div>
         </td>
       </tr>
     {{/each}}
