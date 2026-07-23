@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.5
+
+**Fix: the Encounters, Provisions and Play It Out tabs did nothing when clicked.** Camp
+Out registered its own tab-switching action under the name `tab`, which Foundry's
+ApplicationV2 framework reserves for its own built-in tab navigation. The framework's
+handler intercepted every click first and silently did nothing, since the Planner never
+defines the `static TABS` configuration that system expects. The action is renamed to
+`selectTab` throughout, which sidesteps the collision entirely; Roster & Shifts kept
+working because it never needed a click to display in the first place.
+
 ## 1.1.4
 
 **Branding tidy-up.** The Planner window and its token-control tooltip are now just called

@@ -57,7 +57,7 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
       resolve: CampPlanner.#onResolve,
       complete: CampPlanner.#onComplete,
       notify: CampPlanner.#onNotify,
-      tab: CampPlanner.#onTab,
+      selectTab: CampPlanner.#onSelectTab,
       theme: CampPlanner.#onTheme,
       addActor: CampPlanner.#onAddActor,
       removeActor: CampPlanner.#onRemoveActor,
@@ -318,7 +318,16 @@ export class CampPlanner extends HandlebarsApplicationMixin(ApplicationV2) {
   /*  Action handlers                             */
   /* -------------------------------------------- */
 
-  static async #onTab(event, target) {
+  /**
+   * Switch the visible tab. Named `selectTab` rather than `tab` because
+   * ApplicationV2 reserves `data-action="tab"` for its own built-in tab
+   * navigation (`_onClickTab`, driven by `static TABS`); registering a custom
+   * action under that same name gets silently shadowed by the framework's
+   * handler, which no-ops since this app never defines `TABS`. Camp Out keeps
+   * its own lightweight tab state (`#tab`) instead of adopting the framework's
+   * tab system, so the fix is just avoiding the reserved name.
+   */
+  static async #onSelectTab(event, target) {
     this.#tab = target.dataset.tabId;
     this.render(false);
   }
