@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.6
+
+**Fix: the row-tools buttons on Roster & Shifts drifted out of alignment.** Table cells
+were vertically centred against the row's full height, so a row with a long character
+name (wrapping to two lines, plus badges) grew taller than its neighbours, and the clear
+and remove buttons in the last column centred within that extra height instead of staying
+level with the shorter rows above and below. Cells now anchor to the top of the row
+instead, so every row's buttons line up regardless of how tall any one row gets.
+
 ## 1.1.5
 
 **Fix: the Encounters, Provisions and Play It Out tabs did nothing when clicked.** Camp
